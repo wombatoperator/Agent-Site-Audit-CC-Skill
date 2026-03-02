@@ -1,0 +1,141 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : liveramp.com                                       ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 63/100
+   LiveRamp's homepage is rich in content and interaction — 136 interactive
+   refs, a highly descriptive footer nav, and award/news links carrying full
+   article titles. There is even a dedicated "Agentic AI Orchestration" link
+   in the platform nav, signaling active investment in the space. However, the
+   structured data situation is a critical failure: the only JSON-LD present
+   is 5 Wistia VideoObject blocks — no WebPage, no WebSite, no Organization
+   schema whatsoever. There is also no llms.txt and 4 unlabeled icon links.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest.           │
+   │ /robots.txt     │ FOUND     │ Fully permissive: User-agent: * Allow: / │
+   │                 │           │ Sitemap declared twice (duplicate). No   │
+   │                 │           │ AI-specific entries.                     │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [17/25 pts]
+   Heading hierarchy  : h1 "Reach customers anywhere. Measure impact
+                        everywhere." — split across visual lines but
+                        readable as a single heading. Present and on-brand.
+   Landmark regions   : Nav labeled (uses buttons for dropdown menus:
+                        Solutions, Platform, Resources, Partners, Company).
+                        Privacy consent dialog at top is non-blocking.
+                        No skip link detected.
+   ARIA label quality : Strengths: award/news links carry full article
+                        titles (e.g., "LiveRamp wins the 2025 Google Cloud
+                        DORA Award for Operational Excellence and Automation"
+                        [e41]). Carousel "Go to slide N" buttons are labeled.
+                        Notable: "Agentic AI Orchestration" [e86] — a named
+                        platform feature link, signals active AI agent focus.
+                        Gaps: 4 unlabeled links [e63, e129, e130, e131] —
+                        likely social icon links in footer. 5× "see case
+                        study" and 3× "Learn more" are contextually generic.
+   Total tree nodes   : 136 interactive refs (richest page in cohort)
+
+4. INTERACTIVE ELEMENT COVERAGE                        [16/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │    22 │      22 │ 100%      │
+   │ Links        │   110 │     106 │  96%      │
+   └──────────────┴───────┴─────────┴───────────┘
+   4 unlabeled links (e63, e129-e131 — footer social icons).
+   Carousel "Go to slide 1-8" buttons are well-labeled.
+   "Close" buttons [e132-e136] labeled (consent dialog dismissal).
+
+5. AGENT NAVIGATION JOURNEY LOG                        [12/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 readable. Nav covers Solutions,
+                                 Platform, Resources, Partners, Company —
+                                 all accessible via labeled buttons.
+   Step 2 — Navigate Content   : GOOD. Award news links carry full descriptive
+                                 titles. Footer nav highly structured with
+                                 product categories, platform features,
+                                 industries, and partner links all labeled.
+   Step 3 — CTA Interaction    : SUCCESS. "Talk to an expert" [e16],
+                                 "Tour the platform" [e17/e19/e64],
+                                 "Explore solutions" [e18] all accessible.
+   Step 4 — Form Interaction   : N/A — no standalone form on homepage;
+                                 consent dialog present but non-blocking.
+   Step 5 — Return to Home     : SUCCESS. "home" [e9] logo link present.
+
+6. STRUCTURED DATA FINDINGS                            [4/15 pts]
+   JSON-LD schemas : 5 VideoObject blocks (Wistia customer testimonial
+                     embeds). Each includes thumbnailUrl, embedUrl,
+                     uploadDate, and transcript text. NO WebPage schema,
+                     NO WebSite schema, NO Organization schema present.
+                     This is the largest structured data gap in the cohort
+                     for a company of LiveRamp's size. Site appears to be
+                     built on Webflow (not WordPress/Yoast), explaining the
+                     absence of auto-generated schema.
+   OG tags         : COMPLETE — og:title "LiveRamp: The Data Collaboration
+                     Platform of Choice" (correctly set, not "Home").
+                     og:type "website" ✓. og:image (1200×628 AVIF).
+                     og:description matches brand positioning.
+   Meta description: PRESENT — "LiveRamp is the data collaboration platform
+                     of choice for the world's most innovative companies.
+                     Build brand & business value through flexible
+                     collaboration."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [9/10 pts]
+   Page title retrieved : YES — "LiveRamp: The Data Collaboration Platform
+                          of Choice"
+   Body text length     : 1,090 words (good)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Cookie consent dialog (non-blocking)
+   Verdict              : Fully accessible headlessly
+
+8. TOP 3 CRITICAL ISSUES
+   ① No Organization, WebPage, or WebSite JSON-LD schema — AI agents have
+     no machine-readable entity data for LiveRamp. No founding data, no
+     logo entity, no sameAs profiles, no SearchAction. For a data company
+     positioning itself on "Agentic AI Orchestration", this is the most
+     significant gap.
+   ② No llms.txt — LiveRamp's case studies, Marketing Innovation Blog,
+     and LiveRamp University content are high-value for LLM indexing.
+     Site is Webflow-based so Yoast is not available; would require a
+     custom implementation or a Webflow app.
+   ③ 4 unlabeled footer icon links [e63, e129-e131] — social platform
+     destinations not accessible to agents or screen readers.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Add Organization JSON-LD manually (or via Webflow's embed block) —
+     at minimum name, url, logo, and sameAs (LinkedIn, X, Facebook,
+     Instagram). This is the single highest-ROI structured data fix.
+   • Add aria-label to the 4 unlabeled social footer links (e63, e129-131).
+   • Standardize case study links — "see case study" should include the
+     customer name (e.g., "See DICK'S Sporting Goods case study").
+
+   STRATEGIC (longer-term improvements):
+   • Implement /llms.txt — given the Webflow stack, this requires custom
+     implementation. Suggest adding it to the Webflow hosting config with
+     a static file. LiveRamp University and Blog content sections are
+     ideal starting points.
+   • Add WebPage and WebSite JSON-LD via Webflow page settings or a
+     custom head embed — Webflow's SEO panel doesn't auto-generate these.
+
+10. CLOSING NOTES
+    LiveRamp's "Agentic AI Orchestration" product link [e86] in the platform
+    nav is the most forward-looking AI signal found in the nav of any site
+    in this cohort. The company is actively building agent infrastructure
+    while leaving its own site largely unreadable to those same agents.
+    Built on Webflow (CDN URLs confirm: cdn.prod.website-files.com). The
+    cookie consent overlay [e1-e7] includes "Global Privacy Control" link
+    — above average privacy infrastructure.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

@@ -1,0 +1,130 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : pubmatic.com                                       ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 69/100
+   PubMatic ships a solid Yoast @graph (WebPage, WebSite, Organization with
+   logo and sameAs) and the best social link labeling in the cohort —
+   "PubMatic on Facebook", "PubMatic on X (Twitter)", "PubMatic on LinkedIn"
+   are explicit platform-named labels. Critical gaps: only 174 words of body
+   text (thinnest homepage in the audit), no llms.txt, WebSite description
+   is an empty string, and one unlabeled link in the interactive tree.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest. Site runs │
+   │                 │           │ on WordPress/Yoast — upgrading Yoast to  │
+   │                 │           │ v26.8+ would auto-generate this file.    │
+   │ /robots.txt     │ FOUND     │ WordPress standard: Disallow: /wp-admin/ │
+   │                 │           │ Allow: /wp-admin/admin-ajax.php.         │
+   │                 │           │ Effectively permissive. No AI-specific   │
+   │                 │           │ entries. Sitemap declared.               │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [18/25 pts]
+   Heading hierarchy  : h1 "BUILDING A BETTER SUPPLY CHAIN FOR THE FUTURE
+                        OF DIGITAL ADVERTISING" — all-caps but present and
+                        highly descriptive. Single h1.
+   Landmark regions   : Nav labeled. Footer present. No skip link.
+   ARIA label quality : Standout finding — social footer links carry full
+                        platform-specific labels: "PubMatic on Facebook",
+                        "PubMatic on X (Twitter)", "PubMatic on LinkedIn".
+                        Best social link labeling in the entire audit cohort.
+                        1 unlabeled link [e9] in the interactive tree
+                        (appears to be a decorative image link).
+   Total tree nodes   : 29 interactive refs (sparse — thin page)
+
+4. INTERACTIVE ELEMENT COVERAGE                        [17/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     1 │       1 │ 100%      │
+   │ Links        │    28 │      27 │  96%      │
+   └──────────────┴───────┴─────────┴───────────┘
+   1 unlabeled link [e9]. All nav, footer, and social links clearly labeled.
+   "English" language button [e22] labeled. No form elements on homepage.
+
+5. AGENT NAVIGATION JOURNEY LOG                        [12/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 readable and descriptive.
+                                 Nav (Solutions, Products, Resources, About,
+                                 Careers, Login, Contact Us) fully labeled.
+   Step 2 — Navigate Content   : SUCCESS. Main CTAs "OUR PUBLISHER SOLUTIONS"
+                                 [e10] and "BROWSE RESOURCES AND INSIGHTS"
+                                 [e11] clearly labeled. Footer nav covers
+                                 Solutions, Resources, About Us, Careers,
+                                 Investor Relations, Community.
+   Step 3 — CTA Interaction    : SUCCESS. "Contact Us" [e2] and "LEARN MORE"
+                                 [e12] accessible.
+   Step 4 — Form Interaction   : N/A — no form on homepage.
+   Step 5 — Return to Home     : SUCCESS. "Pubmatic logo" [e1] link present.
+
+6. STRUCTURED DATA FINDINGS                            [10/15 pts]
+   JSON-LD schemas : Yoast @graph: WebPage (datePublished 2024-06-14,
+                     dateModified 2026-01-22 — recent), BreadcrumbList,
+                     WebSite (name "PubMatic", description EMPTY STRING ""),
+                     Organization (name, url, logo URL populated 1859×271px,
+                     sameAs: Facebook/X/LinkedIn — 3 profiles, no Instagram).
+                     WebSite description being empty is a data quality bug.
+   OG tags         : CORRECT — og:title "Programmatic Advertising Technology
+                     Company | PubMatic" (NOT "Home" — this is properly
+                     configured). og:type "website" ✓. og:image 1200×628
+                     PNG present. og:description matches meta description.
+   Meta description: PRESENT — "Learn how PubMatic, a sell-side advertising
+                     technology company, maximizes customer value & puts you
+                     in control of your digital advertising business."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [7/10 pts]
+   Page title retrieved : YES — "Programmatic Advertising Technology
+                          Company | PubMatic"
+   Body text length     : 174 words — LOWEST in entire audit cohort.
+                          Homepage appears to be primarily visual/image-based
+                          with minimal text rendered in the accessibility tree.
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Minimal
+   Verdict              : Fully accessible headlessly, but content is sparse.
+
+8. TOP 3 CRITICAL ISSUES
+   ① 174 words of body text — the thinnest homepage in the cohort. AI agents
+     extracting information about PubMatic from the homepage will receive
+     very little context. Most content appears to be in images or dynamic
+     elements not exposed to the accessibility tree.
+   ② No llms.txt — PubMatic's blog, case studies, and resources are not
+     indexed for LLM discovery. A Yoast v26.8+ upgrade delivers this
+     automatically given the WordPress infrastructure.
+   ③ WebSite JSON-LD description is an empty string — the site's schema
+     self-description is blank. AI parsers receive no brand description
+     from the WebSite entity.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Upgrade Yoast SEO to v26.8+ — auto-generates /llms.txt immediately.
+   • Populate the WebSite JSON-LD description in Yoast settings — currently
+     an empty string; should be the brand tagline.
+   • Add Instagram to sameAs profiles in Organization schema.
+
+   STRATEGIC (longer-term improvements):
+   • Increase homepage text content — 174 words gives AI agents almost no
+     information about PubMatic's products or value proposition. Even a
+     short paragraph per product area would significantly improve LLM
+     comprehension.
+   • Add a skip-to-main-content link for WCAG compliance and agent
+     traversal efficiency.
+
+10. CLOSING NOTES
+    PubMatic's social link labeling ("PubMatic on Facebook", "PubMatic on
+    X (Twitter)") is the gold standard in this cohort — every site should
+    adopt this "Brand on Platform" pattern. Built on WordPress/Yoast.
+    No bot resistance observed. The extremely low word count (174) is the
+    most notable gap — the homepage renders primarily as a visual experience
+    that doesn't translate to the accessibility tree.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════
