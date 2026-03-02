@@ -1,0 +1,378 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║              AI AGENT ACCESSIBILITY AUDIT REPORT                        ║
+║  Domain  : www.thetradedesk.com                                         ║
+║  Date    : 2026-03-01                                                   ║
+║  Tool    : agent-browser v0.15.1                                        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Grade : C    Score : 73 / 100
+
+   The Trade Desk delivers a technically solid agent experience in the areas
+   that matter most for live interaction: every interactive element is
+   labeled, the navigation journey is flawless, forms fill cleanly, and the
+   page loads fully headlessly with no bot resistance. The C grade is driven
+   by two high-leverage gaps — zero JSON-LD structured data and no llms.txt
+   — both striking omissions for a company selling AI-powered advertising
+   infrastructure. One point separates them from a B.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. LLM / AI READINESS                                              2 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────┬────────────┬────────────────────────────────────────┐
+   │ File            │ Status     │ Finding                                │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND  │ 404. No content manifest declared.     │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /robots.txt     │ FOUND      │ Minimal file. User-agent: * only —     │
+   │                 │            │ no AI-specific bot rules at all.       │
+   │                 │            │ Restricts only: /cpresources/,         │
+   │                 │            │ /vendor/, /cache/, /.env (technical    │
+   │                 │            │ paths only). All content fully open.   │
+   │                 │            │ Neutral stance, not a penalty.         │
+   └─────────────────┴────────────┴────────────────────────────────────────┘
+
+   Score breakdown:
+     /llms.txt    →  0 / 12  (file absent)
+     /robots.txt  →  2 / 3   (found, no AI-specific rules — neutral)
+
+   Context: The Trade Desk's core platform is built on programmatic,
+   data-driven advertising. They actively market AI-powered audience
+   targeting and measurement. Not having /llms.txt is a pointed gap —
+   the site's own content (UID2 documentation, platform guides, Ventura
+   ecosystem) is exactly what an LLM or agent-based advertising tool would
+   want to discover. This file would also differentiate them from DSP
+   competitors in agent-shopping and AI-mediated buying scenarios.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. ACCESSIBILITY TREE ANALYSIS                                    19 / 25 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Heading Hierarchy                                               7 / 8
+   ─────────────────────────────────────────────────────────────────────
+   Single h1 ✓: "An objectively better way to advertise"
+   Clean and correct cascade throughout the main content:
+
+     h1  "An objectively better way to advertise"
+     h2  "Smarter marketing starts here"
+     h2  "Reach more people across more channels"
+       h3  "Audio"
+       h3  "Connected TV"
+       h3  "Digital out-of-home"
+       h3  "Mobile" / "Display" / "Native" / "Video"
+     h2  "All from one platform"
+     h2  "And measure results both online and in store..."
+     h2  "Let's get started"
+     h2  "Read all about it"
+       h3  [three news article headings]
+     h2  "Ready to take your digital advertising approach further?"
+
+   One minor issue: a floating banner heading "Download the Premium Payoff
+   Report" renders as h3 at ref e331, outside the main content flow (in an
+   overlay/banner widget). It has no parent h2 in context, creating a
+   minor orphan heading. Not critical but worth noting.
+
+   Landmark Regions                                                5 / 9
+   ─────────────────────────────────────────────────────────────────────
+   ✓  <main>      present
+   ✓  <nav>       present — but no aria-label
+   ✓  <region>    multiple labeled regions for channel tab panels (Audio,
+                  CTV, etc.) — these are well-structured ✓
+   ✗  Nav has no aria-label — agents cannot distinguish it from any
+        other navigation that might appear on sub-pages
+   ✗  No <footer role="contentinfo"> — footer content rendered in
+        an unlabeled container
+   ✗  Only one navigation element (primary nav only)
+
+   ARIA Label Quality                                              7 / 8
+   ─────────────────────────────────────────────────────────────────────
+   All interactive elements carry accessible names — zero unlabeled
+   elements found across links, buttons, inputs, comboboxes, checkboxes.
+
+   Minor quality issues (not scored as unlabeled, but noted):
+   • Dropdown nav buttons use the pattern "click to open dropdown X"
+     (e.g. "click to open dropdown Company"). The "click to open" prefix
+     is redundant per ARIA best practice — the role already implies
+     activation. Preferred: "Company, collapsed" or "Company menu".
+   • Form field labels include `*` for required fields inline in the
+     label text ("* First name:") rather than via aria-required="true".
+     Functional but mixes visual and semantic signals.
+   • Social links are fully and descriptively labeled:
+     "Follow The Trade Desk on Facebook/LinkedIn/Instagram/X" ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. INTERACTIVE ELEMENT COVERAGE                                   20 / 20 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌──────────────────────┬───────┬─────────┬───────────────┐
+   │ Element Type         │ Total │ Labeled │ Coverage      │
+   ├──────────────────────┼───────┼─────────┼───────────────┤
+   │ Buttons              │   11  │   11    │   100.0%      │
+   │ Links                │   36  │   36    │   100.0%      │
+   │ Textboxes            │    7  │    7    │   100.0%      │
+   │ Comboboxes           │    3  │    3    │   100.0%      │
+   │ Checkbox             │    1  │    1    │   100.0%      │
+   ├──────────────────────┼───────┼─────────┼───────────────┤
+   │ TOTAL                │   58  │   58    │   100.0%      │
+   └──────────────────────┴───────┴─────────┴───────────────┘
+
+   Note: The contact form includes a 256-option country combobox (e32–e261)
+   and multi-option area-of-interest and company-type dropdowns. All
+   options are labeled. Counted comboboxes as units above; the underlying
+   options are fully accessible.
+
+   Coverage score    →  15 / 15  (100% — perfect)
+   Ref reachability  →  5 / 5    (all refs resolved on first attempt;
+                                   back navigation clean throughout)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. AGENT NAVIGATION JOURNEY LOG                                   15 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Step 1 — Land + Orient
+     Action  : Read h1 and nav landmark
+     Result  : ✓ SUCCESS  h1 = "An objectively better way to advertise"
+               Nav exposes: Company (dropdown), Platform (dropdown),
+               Resources & Insights (dropdown), Careers, Investors,
+               Login, Contact us, Get started
+     Score   : 3 / 3
+
+   Step 2 — Navigate to Primary Content
+     Ref used: e18  (link "Get to know our platform")
+     Action  : click e18 → wait networkidle → read h1
+     Result  : ✓ SUCCESS  Navigated to /our-demand-side-platform
+               New h1 = "The leading demand-side platform for
+               data-driven advertising"
+               Clean navigation, no errors.
+     Score   : 3 / 3
+
+   Step 3 — Primary CTA Interaction
+     Ref used: e9  (link "Contact us")
+     Action  : back → wait → click e9 → wait networkidle → check URL
+     Result  : ✓ SUCCESS  Navigated to /contact-us
+               Back navigation worked cleanly.
+     Score   : 3 / 3
+
+   Step 4 — Form Interaction
+     Refs used: e25 (First name), e26 (Last name), e27 (Work email)
+     Action  : fill e25 "Test Agent" → fill e26 "User" →
+               fill e27 "agent@test.com" → verify via DOM
+     Result  : ✓ SUCCESS  DOM confirmed:
+               FirstName=Test Agent, LastName=User,
+               Email=agent@test.com
+               Form is comprehensive (7 text inputs + 3 comboboxes
+               + checkbox) and all fields agent-fillable.
+     Score   : 3 / 3
+
+   Step 5 — Return to Homepage
+     Action  : back() → wait networkidle
+     Result  : ✓ SUCCESS  back() returned to
+               https://www.thetradedesk.com/ in one step.
+     Score   : 3 / 3
+
+   PERFECT JOURNEY — all 5 steps completed without error or workaround.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6. STRUCTURED DATA FINDINGS                                        7 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   JSON-LD Schemas Found                                           0 / 8
+   ─────────────────────────────────────────────────────────────────────
+   NONE. Zero JSON-LD blocks found on the homepage.
+
+   For a company of The Trade Desk's scale and B2B profile — Forbes Global
+   2000 customer base, publicly traded, operating the leading independent
+   DSP — the absence of an Organization schema is a significant oversight.
+   An LLM or agent attempting to understand who The Trade Desk is, what
+   they do, and how to contact them must infer everything from plain text.
+
+   Missing schemas that would be high-value:
+   • Organization (name, description, foundingDate, sameAs, contactPoint)
+   • SoftwareApplication or Product (for the DSP platform itself)
+   • NewsArticle or Article (for the press releases displayed on the page)
+
+   Open Graph Tags                                                 4 / 4
+   ─────────────────────────────────────────────────────────────────────
+   og:url         : https://www.thetradedesk.com ✓
+   og:type        : "website" ✓
+   og:title       : "An objectively better way to advertise" ✓
+   og:description : "From brand building to performance marketing,
+                     our omnichannel platform was built with one goal:
+                     helping you reach yours." ✓
+   og:image       : CDN-hosted JPEG (1200×630) ✓
+   og:locale      : "en-US" ✓
+   All core OG tags present and properly populated. ✓
+
+   Meta Description                                                3 / 3
+   ─────────────────────────────────────────────────────────────────────
+   "From brand building to performance marketing, our omnichannel
+    platform was built with one goal: helping you reach yours."
+   Length: ~117 characters — within ideal range. ✓
+
+   Twitter Cards
+   ─────────────────────────────────────────────────────────────────────
+   twitter:title       : present ✓
+   twitter:description : present ✓
+   twitter:image       : present ✓
+   twitter:url         : present ✓
+   twitter:card        : MISSING ← no card type declared
+   Without `twitter:card`, Twitter/X cannot render this as a rich card.
+   Content is there; the declaration tag is absent.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7. BOT RESISTANCE ASSESSMENT                                      10 / 10 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Page title retrieved  : ✓  "An objectively better way to advertise
+                               | The Trade Desk"
+   Body text length      : 5,019 characters  /  728 words
+   JS execution          : ✓  Reliable across all pages visited
+   CAPTCHA detected      : ✗  None
+   Anti-bot challenge    : ✗  None
+   Lazy-load elements    : 10  (minimal; no content blocked)
+   Verdict               : Fully accessible headlessly
+
+   Score breakdown:
+     Content availability  →  5 / 5  (728 words fully loaded, no walls)
+     CAPTCHA / anti-bot    →  3 / 3  (clean pass)
+     JS execution          →  2 / 2  (reliable throughout)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8. TOP 3 CRITICAL ISSUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ① Zero JSON-LD structured data (0/8 pts — biggest single gap)
+     No Organization, Product, or Article schema exists on the homepage.
+     This is the most impactful fixable issue: adding an Organization
+     schema alone would move the structured data score from 7/15 to ~12/15
+     and push the total score to ~78 — a solid Grade B. The Trade Desk is
+     a publicly traded, globally recognized company. LLMs answering "what
+     is The Trade Desk?" can only work from plain text crawl; a rich
+     Organization schema gives agents verified, authoritative structured
+     signals for business identity, contact info, and social profiles.
+
+   ② No /llms.txt (0/12 pts)
+     This is the dimension with the most room to grow. The Trade Desk sits
+     at the intersection of programmatic advertising and AI — they have a
+     Developer portal, UID2 documentation, Ventura ecosystem materials, and
+     platform documentation that LLMs and buying agents would directly
+     benefit from having indexed. A well-structured llms.txt pointing to
+     these resources would both improve score and establish The Trade Desk
+     as a forward-looking DSP in the AI-mediated advertising market.
+
+   ③ Navigation landmark unlabeled + no footer landmark
+     The single <nav> element has no aria-label, making it ambiguous on
+     pages where secondary navigation might appear. The footer is an
+     unlabeled container. These are easy fixes — `aria-label="Primary"` on
+     the nav and `role="contentinfo"` on the footer container require one
+     line of code each.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   QUICK WINS  (implement in < 1 week)
+   ──────────────────────────────────────────────────────────────────
+
+   • Add an Organization JSON-LD schema to the homepage <head>
+     Include: name, legalName, url, logo, description, foundingDate,
+     sameAs (LinkedIn, X/Twitter, Wikipedia, GitHub, Bloomberg), and
+     contactPoint. This is a static JSON blob — no backend work required.
+     Moves structured data score from 7/15 to ~12/15 (+5 pts overall).
+
+   • Add twitter:card meta tag
+     `<meta name="twitter:card" content="summary_large_image">` — one
+     line. The other four Twitter tags are already correct. Without this,
+     the social share card degrades to basic text on X/Twitter.
+
+   • Add aria-label="Primary navigation" to the <nav> element
+     Single attribute change. Instantly distinguishes the nav for agents
+     traversing multiple pages with different nav structures.
+
+   • Add role="contentinfo" to the footer container
+     One attribute, zero design impact. Properly signals footer content
+     to screen readers and agents.
+
+   STRATEGIC  (higher effort, longer term)
+   ──────────────────────────────────────────────────────────────────
+
+   • Create /llms.txt covering the full content estate
+     Priority sections to include: Platform overview (/our-demand-side-
+     platform), Developer docs, UID2 documentation, Ventura ecosystem,
+     News/Press releases, Careers. Given The Trade Desk's positioning as
+     an AI-era advertising platform, this file would be noticed by the
+     industry and referenced as a best-practice example.
+
+   • Add Article/NewsArticle schema to press releases on the homepage
+     The three news items already have h3 headings and links — wrapping
+     them in NewsArticle JSON-LD (headline, datePublished, url, publisher)
+     would give agents structured access to news content without having
+     to parse HTML.
+
+   • Refactor dropdown button labels
+     Replace "click to open dropdown Company" with "Company" (the
+     accessible role/expanded state conveys the rest). Reduces noise
+     in the accessibility tree for agents parsing nav structure.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+10. CLOSING NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   • Audit covered the homepage (/) only. The DSP platform itself sits
+     behind authentication and was not in scope. The /our-demand-side-
+     platform sub-page was visited during the navigation journey and
+     showed a similar structure and quality level.
+
+   • The contact form is one of the most complete and well-labeled forms
+     observed across audits to date: 7 text inputs, 3 comboboxes with
+     full country lists and business type classification, consent checkbox,
+     and message textarea — all labeled and agent-fillable.
+
+   • robots.txt is minimal and functional. With no disallows on content
+     paths and no AI bot-specific rules, The Trade Desk is effectively
+     open to all crawlers. Explicitly naming AI bots with Allow rules
+     would be an easy trust signal to add.
+
+   • The score of 73/100 sits one point below Grade B. Adding the
+     Organization JSON-LD schema alone would realistically push the
+     final score to 78 (Grade B). Adding /llms.txt on top would push
+     it to 88-90 (Grade A territory).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   SCORE SUMMARY
+   ┌──────────────────────────────────┬─────────┬────────────┐
+   │ Dimension                        │ Max Pts │ Score      │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ LLM / AI Readiness               │   15    │    2       │
+   │ Accessibility Tree Quality       │   25    │   19       │
+   │ Interactive Element Coverage     │   20    │   20       │
+   │ Structured Data / Schema         │   15    │    7       │
+   │ Agent Navigation Fluency         │   15    │   15       │
+   │ Bot Resistance / Reliability     │   10    │   10       │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ TOTAL                            │  100    │   73       │
+   │ GRADE                            │         │    C       │
+   └──────────────────────────────────┴─────────┴────────────┘
+
+   Grade C (55–74): Functional but agents encounter friction on key flows.
+   One JSON-LD schema commit away from Grade B. /llms.txt would reach A.
+
+════════════════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+   agent-browser v0.15.1 · Session: thetradedesk
+════════════════════════════════════════════════════════════════════════════

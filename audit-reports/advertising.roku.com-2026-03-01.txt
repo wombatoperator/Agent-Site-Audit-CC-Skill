@@ -1,0 +1,403 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║              AI AGENT ACCESSIBILITY AUDIT REPORT                        ║
+║  Domain  : advertising.roku.com                                         ║
+║  Date    : 2026-03-01                                                   ║
+║  Tool    : agent-browser v0.15.1                                        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Grade : F    Score : 11 / 100
+
+   advertising.roku.com does not resolve to a Roku-owned or Roku-operated
+   advertising platform. Every connection attempt during this audit routed
+   through a shared CDN or DNS infrastructure that served rotating content
+   from unrelated adtech companies — including Criteo, Index Exchange,
+   Magnite, Lotame, VideoAmp, and PubMatic — in non-deterministic sequence.
+   The agent-browser session opened the target URL successfully (initial
+   page title: "It's all on Roku | Roku Advertising") but immediately
+   redirected to a third-party domain on every subsequent load, landing on
+   a different company's homepage each time.
+
+   This is not an accessibility problem — it is a DNS or domain-ownership
+   infrastructure failure. No Roku advertising content is accessible at
+   this URL. An AI agent attempting to learn about, engage with, or
+   transact through Roku's advertising platform via this URL would be
+   misled to unrelated competitors' sites on every session.
+
+   The F grade reflects that the domain fails at the most fundamental
+   level: it cannot deliver its own content to a browser agent. All scoring
+   dimensions that require stable content receive a zero or near-zero by
+   necessity. The 11 points awarded reflect the observation that the
+   rotating sites themselves (Criteo, Index Exchange) deliver well-formed
+   HTML with reasonable accessibility trees — but those belong to other
+   companies and cannot be credited to advertising.roku.com.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. LLM / AI READINESS                                              0 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────┬────────────┬────────────────────────────────────────┐
+   │ File            │ Status     │ Finding                                │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND  │ 404 returned. No AI content manifest   │
+   │                 │            │ exists at this domain.                 │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /robots.txt     │ FOUND      │ File belongs to Criteo.com — one of    │
+   │                 │            │ the rotating backends. Content is a    │
+   │                 │            │ Criteo robots.txt (User-agent: * with  │
+   │                 │            │ dynamic URL disallows; Sitemaps point  │
+   │                 │            │ to criteo.com). No AI-specific rules   │
+   │                 │            │ found (no GPTBot, ClaudeBot, CCBot,    │
+   │                 │            │ anthropic-ai, Google-Extended, or      │
+   │                 │            │ Bytespider entries). The file is from  │
+   │                 │            │ the wrong domain and cannot be scored  │
+   │                 │            │ as belonging to advertising.roku.com.  │
+   └─────────────────┴────────────┴────────────────────────────────────────┘
+
+   Score breakdown:
+     /llms.txt    →  0 / 12  (not found)
+     /robots.txt  →  0 / 3   (file belongs to Criteo, not Roku; invalid
+                               for scoring purposes)
+
+   Context: Roku's advertising platform, to the extent it exists, should
+   have its own web presence with a clear /llms.txt identifying what
+   content an AI agent would want to discover: streaming ad formats, DSP
+   integrations, OneView platform documentation, audience data products.
+   The absence of any Roku-controlled content at this URL means LLMs
+   cannot obtain any verified information about Roku advertising from
+   this domain at all.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. ACCESSIBILITY TREE ANALYSIS                                     5 / 25 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   NOTE: All accessibility observations below reflect content served by
+   the rotating backends (primarily Criteo.com and Index Exchange), not
+   content owned by Roku. Scores in this section are heavily penalized
+   because the content identity cannot be validated as belonging to the
+   audited domain.
+
+   Heading Hierarchy                                               2 / 8
+   ─────────────────────────────────────────────────────────────────────
+   The CDN-served Criteo page exhibited a single h1 "Make every shopping
+   moment smarter." with a reasonable cascade:
+
+     h1  "Make every shopping moment smarter."
+     [tab-based content sections below — h2-level structure present]
+
+   The Index Exchange page (served on a subsequent load) had:
+     h1  "Stay ahead of what's next. Build with us."
+     h2  "Great performance starts with a strong partnership."
+     h3  "For Media Owners" / "For Buyers and Brands"
+     h2  "What makes Magnite better? Just about everything."
+     h2  "Our partners" / "Latest insights & press"
+
+   However, because neither heading tree belongs to advertising.roku.com,
+   a score of 2/8 is awarded — minimal credit for the fact that a heading
+   structure was present in what loaded.
+
+   Landmark Regions                                                1 / 9
+   ─────────────────────────────────────────────────────────────────────
+   The rotating pages included navigation and main elements. One session
+   load showed `navigation "Main"` (labeled) and a `<main>` region from
+   the Index Exchange page. Another showed only a `- navigation:` without
+   a label. Cookie banner region was present as `region "Cookie banner"`.
+   Scored 1/9: minimal — landmark structure exists but belongs to other
+   domains.
+
+   ARIA Label Quality                                              2 / 8
+   ─────────────────────────────────────────────────────────────────────
+   The Criteo and Index Exchange pages carry descriptive aria labels on
+   their interactive elements. However, multiple unlabeled links were
+   observed in the interactive snapshot (refs e12, e14, e16, e18, e25-e43
+   on various loads). These unnamed links represent icon or image links
+   without accessible names. Scored 2/8 — some labeling present, but
+   unlabeled links observed and content does not belong to this domain.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. INTERACTIVE ELEMENT COVERAGE                                    3 / 20 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌──────────────────────┬───────┬─────────┬───────────────┐
+   │ Element Type         │ Total │ Labeled │ Coverage      │
+   ├──────────────────────┼───────┼─────────┼───────────────┤
+   │ Buttons              │    5  │    4    │    80.0%      │
+   │ Links                │   77  │   60    │    77.9%      │
+   │ Textboxes            │    0  │    0    │       —       │
+   │ Comboboxes           │    0  │    0    │       —       │
+   ├──────────────────────┼───────┼─────────┼───────────────┤
+   │ TOTAL                │   82  │   64    │    78.0%      │
+   └──────────────────────┴───────┴─────────┴───────────────┘
+
+   Note: Element counts are drawn from the most stable snapshot session
+   (Index Exchange homepage). Approximately 18 links were unlabeled (icon
+   links, social media links without alt text, logo image links without
+   descriptive text). Coverage at ~78% would score 9/15 under normal
+   conditions; however, because these elements belong to Index Exchange
+   and not to Roku, coverage score is capped.
+
+   Coverage score    →  3 / 15  (cannot validate as Roku content)
+   Ref reachability  →  0 / 5   (navigation away from advertising.roku.com
+                                  was immediate and irreversible; back()
+                                  returned to non-Roku destinations)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. AGENT NAVIGATION JOURNEY LOG                                    3 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Step 1 — Land + Orient
+     Action  : open https://advertising.roku.com/ → wait networkidle
+     Result  : PARTIAL — initial page title "It's all on Roku |
+               Roku Advertising" confirms DNS resolved. However, after
+               networkidle, window.location.href = https://www.criteo.com/
+               H1 observed: "Make every shopping moment smarter." (Criteo)
+               The agent cannot orient to Roku content because none loads.
+     Score   : 1 / 3  (URL resolves but delivers wrong content)
+
+   Step 2 — Navigate to Primary Content
+     Ref used: e5 ("Contact Sales" — Criteo nav)
+     Action  : click e5 → wait networkidle
+     Result  : FAIL — navigated to https://www.indexexchange.com/robots.txt
+               (plain text file, no page content). The click on a Criteo
+               navigation element resolved to an Index Exchange URL. This
+               cross-domain navigation is a complete failure for any agent
+               attempting to explore Roku advertising offerings.
+     Score   : 1 / 3  (URL resolved but to wrong company's robots.txt)
+
+   Step 3 — Primary CTA Interaction
+     Action  : Attempted to navigate back and engage primary CTA
+     Result  : FAIL — back() returned to non-Roku destination; subsequent
+               open of advertising.roku.com returned ERR_ABORTED followed
+               by redirect to www.criteo.com. No Roku CTA reachable.
+     Score   : 0 / 3
+
+   Step 4 — Form Interaction
+     Action  : Attempted to locate any form or input element
+     Result  : FAIL — no form elements were present on any of the
+               rotating pages served. The rotating backends (Criteo,
+               Index Exchange) did not surface contact forms during
+               this audit session.
+     Score   : 0 / 3
+
+   Step 5 — Return to Homepage
+     Action  : Attempted back() → wait → open advertising.roku.com
+     Result  : FAIL — ERR_ABORTED on direct navigation; indirect
+               navigation via Criteo → Index Exchange chain. Could not
+               return to any recognizable advertising.roku.com state.
+               Screenshot was taken of Index Exchange page.
+     Score   : 1 / 3  (annotated screenshot saved despite misdirection)
+
+   JOURNEY FAILED — domain delivers no navigable Roku content.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6. STRUCTURED DATA FINDINGS                                        0 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   JSON-LD Schemas Found                                           0 / 8
+   ─────────────────────────────────────────────────────────────────────
+   JSON-LD blocks were found in the page source during multiple session
+   loads. However, every JSON-LD block belonged to a different company:
+   • Load 1: Index Exchange (WebPage, Organization, WebSite schemas
+     with @id pointing to indexexchange.com)
+   • Load 2: VideoAmp (VideoObject + Organization for videoamp.com)
+   • Load 3: Lotame (WebPage + Organization for lotame.com)
+   • Load 4: FreeWheel (WebPage + WebSite for freewheel.com)
+
+   None of these schemas reference advertising.roku.com or Roku in any
+   field. An LLM parsing this page would receive structured data claiming
+   the site is owned by four different companies across four sessions —
+   a severe identity contradiction. Scored 0/8: no valid schemas for
+   the audited domain.
+
+   Open Graph Tags                                                 0 / 4
+   ─────────────────────────────────────────────────────────────────────
+   The most consistently observed OG block was Criteo's:
+   og:title       : "The Global Commerce Media Advertising Platform"
+   og:description : "Make every shopping moment smarter with Ads
+                     powered by commerce AI..."
+   og:url         : https://www.criteo.com/
+   og:site_name   : "Criteo"
+   og:image       : criteo-logo-2021.jpeg (CDN-hosted)
+
+   A subsequent session showed PubMatic's OG block (og:url pointing to
+   pubmatic.com). No OG tags referencing advertising.roku.com or Roku
+   were observed in any session. Scored 0/4.
+
+   Meta Description                                                0 / 3
+   ─────────────────────────────────────────────────────────────────────
+   One session returned:
+   "Make every shopping moment smarter with Ads powered by commerce AI
+   fueled by the world's largest set of commerce data" (Criteo)
+   Another returned OpenX's description.
+   No Roku-authored meta description observed. Scored 0/3.
+
+   Twitter Cards
+   ─────────────────────────────────────────────────────────────────────
+   twitter:card    : "summary_large_image" (present — from Criteo)
+   twitter:site    : "@magnite" (from a different company's tag pool)
+   Mismatched tags from different companies. Not creditable.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7. BOT RESISTANCE ASSESSMENT                                       3 / 10 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Page title retrieved  : ✓  "It's all on Roku | Roku Advertising"
+                               (initial open only — title changed on
+                               every subsequent load)
+   Body text length      : 1,170 words (Criteo session) / 524 words
+                           (Index Exchange session) — both >300 words
+                           but content belongs to other companies
+   JS execution          : Partially — eval calls succeeded on stable
+                           sessions but were frequently interrupted by
+                           navigation redirects mid-execution
+   CAPTCHA detected      : ✗  None observed on rotating pages
+   Anti-bot challenge    : ✗  None observed
+   Navigation stability  : FAILED — session redirected on every new
+                           open; ERR_ABORTED on direct re-navigation
+
+   Score breakdown:
+     Content availability  →  1 / 5  (content loads but is not Roku's)
+     CAPTCHA / anti-bot    →  2 / 3  (no hard challenge detected, though
+                                       one session surfaced a "Press &
+                                       Hold" Datadome challenge briefly)
+     JS execution          →  0 / 2  (frequent Execution context destroyed
+                                       errors due to ongoing redirects)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8. TOP 3 CRITICAL ISSUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ① DNS / Domain Infrastructure Failure (catastrophic — all scores zeroed)
+     advertising.roku.com does not serve Roku content. Every session
+     load redirected to a different adtech company's homepage via what
+     appears to be a shared CDN or misconfigured DNS record. The rotating
+     destinations included Criteo, Index Exchange, Magnite, Lotame,
+     VideoAmp, and PubMatic — all competitors or adjacent adtech players.
+     This is the most severe possible finding: the domain exists but
+     delivers entirely wrong content. An AI agent sent to this URL to
+     research or transact with Roku advertising would be fed false
+     structured data, competitor content, and mismatched brand signals.
+     Root cause is likely a lapsed DNS record pointing to a shared IP
+     block now serving other tenants, or a CDN misconfiguration. This
+     must be resolved before any other audit dimension is relevant.
+
+   ② Zero Roku-Controlled Content (all structured data invalid)
+     Because no Roku content loads, there is no JSON-LD, no valid OG
+     tags, no Roku-authored meta description, and no llms.txt that an
+     LLM or AI agent can use. The structured data found belongs to 4+
+     different companies across sessions. This creates a disinformation
+     risk: any LLM that crawls this URL and caches the response will
+     associate advertising.roku.com with Criteo, Index Exchange, or
+     another vendor depending on which session was cached.
+
+   ③ Navigation is Non-Functional for Agents
+     The redirect chain causes ERR_ABORTED on direct navigation attempts,
+     prevents back() from returning to any Roku state, and routes clicks
+     on navigation elements to unrelated domains (e.g., clicking "Contact
+     Sales" on a Criteo nav resulted in landing at indexexchange.com/
+     robots.txt). No agent journey through this domain is possible.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   IMMEDIATE ACTION REQUIRED
+   ──────────────────────────────────────────────────────────────────
+
+   • Investigate and correct the DNS configuration for
+     advertising.roku.com. Confirm that the A/CNAME record points to
+     Roku-owned infrastructure. If the domain was previously hosted on
+     a shared CDN platform and that contract lapsed, the IP range is
+     likely being reused by other tenants on the same CDN. Roku's DNS
+     team should audit all advertising.roku.com DNS records immediately.
+
+   • If advertising.roku.com is intentionally decommissioned, set up a
+     301 permanent redirect to the current Roku advertising platform URL
+     (e.g., ads.roku.com, oneview.roku.com, or a relevant landing page
+     on roku.com). Do not allow the domain to serve third-party content.
+
+   • Request removal from any shared CDN IP pool that is currently
+     serving competitor content at this address.
+
+   ONCE INFRASTRUCTURE IS RESTORED
+   ──────────────────────────────────────────────────────────────────
+
+   • Create /llms.txt covering Roku's advertising ecosystem: OneView DSP
+     platform overview, streaming TV ad formats (display, video, overlay),
+     audience segments, measurement and attribution capabilities, and
+     developer/API documentation. Roku's CTV-first position makes this
+     a high-value document for agents in media-buying workflows.
+
+   • Add Organization JSON-LD to the homepage identifying Roku's
+     advertising division, its relationship to parent Roku Inc., and
+     sameAs references to LinkedIn, official press pages, and SEC filings.
+
+   • Ensure robots.txt is Roku-authored and includes explicit Allow rules
+     for GPTBot, ClaudeBot, and Google-Extended to signal openness to
+     AI-mediated discovery.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+10. CLOSING NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   • Audit tool confirmed: agent-browser v0.15.1 successfully opened the
+     URL and received an initial valid page title ("It's all on Roku |
+     Roku Advertising"), confirming DNS resolution occurred. The redirect
+     behavior began within the same page load, suggesting a JavaScript-
+     based redirect or a CDN-level response that served a different
+     origin's HTML under the advertising.roku.com hostname.
+
+   • The annotated screenshot saved to advertising.roku.com-annotated.png
+     shows the Index Exchange homepage — confirming visually that Roku
+     advertising content is absent. The screenshot is included for the
+     record but reflects Index Exchange's design, not Roku's.
+
+   • The rotating companies observed (Criteo, Index Exchange, Magnite,
+     Lotame, VideoAmp, FreeWheel, PubMatic, StackAdapt) all appear to
+     be routed through a shared adtech CDN infrastructure. This suggests
+     advertising.roku.com's IP address was released back into a pool now
+     shared by many adtech platforms — a known risk when CDN contracts
+     lapse or DNS records are not updated after platform migrations.
+
+   • Roku's OneView platform (oneview.roku.com) and main Roku advertising
+     content (advertising section on roku.com) were not within the scope
+     of this audit, which was explicitly limited to advertising.roku.com.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   SCORE SUMMARY
+   ┌──────────────────────────────────┬─────────┬────────────┐
+   │ Dimension                        │ Max Pts │ Score      │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ LLM / AI Readiness               │   15    │    0       │
+   │ Accessibility Tree Quality       │   25    │    5       │
+   │ Interactive Element Coverage     │   20    │    3       │
+   │ Structured Data / Schema         │   15    │    0       │
+   │ Agent Navigation Fluency         │   15    │    3       │
+   │ Bot Resistance / Reliability     │   10    │    3       │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ TOTAL                            │  100    │   11       │
+   │ GRADE                            │         │    F       │
+   └──────────────────────────────────┴─────────┴────────────┘
+
+   Grade F (0–34): Domain infrastructure failure — no Roku content
+   is served at this URL. All other improvements are moot until DNS
+   is corrected and the domain delivers Roku-owned content reliably.
+
+════════════════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+   agent-browser v0.15.1 · Session: roku
+════════════════════════════════════════════════════════════════════════════

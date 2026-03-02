@@ -1,0 +1,375 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║              AI AGENT ACCESSIBILITY AUDIT REPORT                        ║
+║  Domain  : www.golivehq.co                                              ║
+║  Date    : 2026-03-01                                                   ║
+║  Tool    : agent-browser v0.15.1                                        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Grade : C    Score : 67 / 100
+
+   GoLive performs well where it counts for real-world agent interactions:
+   content loads fully headlessly, forms are reachable and fillable by ref,
+   navigation is mostly reliable, and Open Graph metadata is complete. The
+   site loses significant ground on proactive AI readiness (no agents.md or
+   llms.txt), an inherited Squarespace heading hierarchy flaw (h2 → h4 skip),
+   and JSON-LD schemas that ship with empty required fields.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. PROACTIVE AI READINESS                                          2 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────┬────────────┬────────────────────────────────────────┐
+   │ File            │ Status     │ Finding                                │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /agents.md      │ NOT FOUND  │ 404. No agent interaction policy.      │
+   │ /llms.txt       │ NOT FOUND  │ 404. No LLM-ready content manifest.    │
+   │ /robots.txt     │ FOUND      │ Standard Squarespace-generated file.   │
+   │                 │            │ Lists 20+ AI bots (GPTBot, ClaudeBot,  │
+   │                 │            │ CCBot, anthropic-ai, Google-Extended,  │
+   │                 │            │ Bytespider, etc.) but neither allows   │
+   │                 │            │ nor disallows them relative to normal  │
+   │                 │            │ crawlers — all share identical rules   │
+   │                 │            │ (blocking /config, /api, /static and   │
+   │                 │            │ query-param variants only). Main       │
+   │                 │            │ content paths are open to all bots.    │
+   └─────────────────┴────────────┴────────────────────────────────────────┘
+
+   Score breakdown:
+     /agents.md   →  0 / 8  (file absent)
+     /llms.txt    →  0 / 4  (file absent)
+     /robots.txt  →  2 / 3  (found, AI bots not restricted but not
+                              explicitly welcomed either — neutral)
+
+   This is the single biggest gap on the scorecard. Neither file requires
+   platform-level access — both can be added as plain-text files served from
+   the root. This is a quick win with outsized scoring impact.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. ACCESSIBILITY TREE ANALYSIS                                    15 / 25 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Heading Hierarchy                                               4 / 8
+   ─────────────────────────────────────────────────────────────────────
+   Exactly one h1 ✓: "SQUARESPACE TEMPLATES AND WEBSITE DESIGN"
+   h2s follow correctly for most of the page ✓
+   Critical flaw: heading jumps h2 → h4 at the "HOW IT WORKS" section:
+
+     h2  "Our Squarespace templates have helped 14,800+ people..."
+       h4  "HERE'S HOW IT WORKS:"          ← skips h3 entirely
+         h3  "1. Choose Your Template"     ← h3 nested inside h4 (inverted)
+         h3  "2. Customize Your Template"
+         h3  "3. Go Live & Launch Your Site!"
+
+   This is a Squarespace template-level issue. The h3 steps are nested inside
+   the h4 label in the DOM, creating an inverted heading hierarchy. Footer
+   navigation group labels also use h4 ("CUSTOM DESIGN", "TEMPLATE SHOP",
+   "NAVIGATE") with no h3 ancestors — acceptable in footer context.
+
+   Landmark Regions                                                5 / 9
+   ─────────────────────────────────────────────────────────────────────
+   ✓  <nav>  present (two navigation regions detected)
+   ✓  <main> present
+   ✓  Carousel regions labeled ("Carousel" via aria-label)
+   ✗  No distinguishing aria-label on the two <nav> elements
+        (primary nav vs footer nav are ambiguous to agents)
+   ✗  No semantic <footer> landmark — footer content lives in a
+        generic container rather than <footer role="contentinfo">
+   ✗  No <aside> (reasonable for this layout)
+
+   ARIA Label Quality                                              6 / 8
+   ─────────────────────────────────────────────────────────────────────
+   All 18 buttons are labeled ✓
+   Both form inputs have placeholder labels ✓
+   46 of 47 text links have descriptive accessible names ✓
+   4 unlabeled image-only links found in template gallery:
+     @e25  thumbnail → Trove Agency  (no alt/aria-label on anchor)
+     @e27  thumbnail → Maya Jones    (no alt/aria-label on anchor)
+     @e29  thumbnail → Nest          (no alt/aria-label on anchor)
+     @e54  icon link (social/other)  (no accessible name)
+   These are duplicate links (each template has an image link + text link
+   pointing to the same destination); agents would reach them via the
+   labeled text sibling, but the image links create ambiguity.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. INTERACTIVE ELEMENT COVERAGE                                   16 / 20 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌──────────────┬───────┬─────────┬───────────────┐
+   │ Element Type │ Total │ Labeled │ Coverage      │
+   ├──────────────┼───────┼─────────┼───────────────┤
+   │ Buttons      │   18  │   18    │   100.0%      │
+   │ Links        │   46  │   42    │    91.3%      │
+   │ Inputs       │    2  │    2    │   100.0%      │
+   ├──────────────┼───────┼─────────┼───────────────┤
+   │ TOTAL        │   66  │   62    │    93.9%      │
+   └──────────────┴───────┴─────────┴───────────────┘
+
+   Coverage score  →  12 / 15  (93.9% = Band B, 85–94%)
+   Ref reachability → 4 / 5
+
+   Notable: "SHOP TEMPLATES" in the sticky header nav (e7) does not trigger
+   page navigation — it appears to be an anchor scroll. Clicking it leaves
+   the agent on https://www.golivehq.co/ rather than routing to /shop. This
+   could cause an agent expecting navigation to enter a loop. The same CTA
+   deeper on the page (e11) behaves the same way.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. AGENT NAVIGATION JOURNEY LOG                                   14 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Step 1 — Land + Orient
+     Action  : Read h1 and nav landmark
+     Result  : ✓ SUCCESS  h1 = "SQUARESPACE TEMPLATES AND WEBSITE DESIGN"
+               Nav exposes: Website Templates, Custom Design, Portfolio,
+               About, BOOK A FREE CALL
+     Score   : 3 / 3
+
+   Step 2 — Navigate to Primary Content
+     Ref used: e3  (link "Custom Design")
+     Action  : click e3 → wait networkidle → read h1
+     Result  : ✓ SUCCESS  Navigated to /squarespace-website-design
+               New h1 = "SQUARESPACE WEBSITE DESIGNERS AGENCY"
+     Note    : SHOP TEMPLATES nav link (e7) attempted first — did NOT
+               navigate (anchor scroll only). Custom Design worked correctly.
+     Score   : 3 / 3
+
+   Step 3 — Primary CTA Interaction
+     Ref used: e6  (link "BOOK A FREE CALL")
+     Action  : click e6 → wait networkidle → check URL
+     Result  : ✓ SUCCESS  Navigated to external Calendly booking page
+               https://calendly.com/d/cxbz-pxz-hb4
+               CTA resolves cleanly to scheduling flow.
+     Score   : 3 / 3
+
+   Step 4 — Form Interaction
+     Refs used: e37 (textbox "First Name"), e38 (textbox "Email Address")
+     Action  : fill e37 "Test Agent" → fill e38 "agent@test.com" → verify
+     Result  : ✓ SUCCESS  Both inputs accepted values. Verified via DOM:
+               "Test Agent|agent@test.com"
+     Score   : 3 / 3
+
+   Step 5 — Return to Homepage
+     Action  : back() → wait networkidle
+     Result  : ⚠ PARTIAL  back() landed on calendly.com (previous in stack).
+               Required direct open https://www.golivehq.co/ to return.
+               Deep-link CTA (Calendly) breaks the agent's back-navigation
+               chain. Agent must maintain own URL stack.
+     Score   : 2 / 3
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6. STRUCTURED DATA FINDINGS                                       11 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   JSON-LD Schemas Found                                           4 / 8
+   ─────────────────────────────────────────────────────────────────────
+   Two schema blocks present: WebSite + LocalBusiness
+
+   WebSite:
+     @type        : WebSite ✓
+     url          : https://www.golivehq.co ✓
+     name         : "GoLive: Squarespace Website Templates" ✓
+     description  : ""   ← EMPTY — critical field missing
+     image        : squarespace-cdn.com path ✓
+
+   LocalBusiness:
+     @type        : LocalBusiness ✓
+     image        : squarespace-static path ✓
+     address      : ""   ← EMPTY — required for LocalBusiness
+     openingHours : ""   ← EMPTY — expected for LocalBusiness
+     (no name, telephone, or priceRange)
+
+   Both schemas were clearly generated by Squarespace defaults and never
+   populated. An agent querying structured data for business information
+   will find the schema shell but no usable content inside it.
+
+   Open Graph Tags                                                 4 / 4
+   ─────────────────────────────────────────────────────────────────────
+   og:title       : "GoLive: Premium Squarespace Templates & Website Designs"
+   og:description : "Premium Squarespace Templates—Shop our designer..."
+   og:image       : squarespace-static CDN URL (1500×367)
+   og:type        : "website"
+   og:url         : https://www.golivehq.co
+   og:site_name   : "GoLive: Squarespace Website Templates"
+   All four core OG tags fully populated. ✓
+
+   Meta Description                                                3 / 3
+   ─────────────────────────────────────────────────────────────────────
+   "Premium Squarespace Templates—Shop our designer Squarespace website
+    templates at a fraction of the cost of a custom Squarespace website
+    design!"
+   Length: ~148 characters — within ideal 50–160 range. ✓
+
+   Twitter Cards
+   ─────────────────────────────────────────────────────────────────────
+   twitter:card        : "summary"
+   twitter:title       : present ✓
+   twitter:description : present ✓
+   twitter:image       : present ✓
+   twitter:url         : present ✓
+   Full Twitter card implemented. ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7. BOT RESISTANCE ASSESSMENT                                       9 / 10 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Page title retrieved  : ✓  "GoLive: Premium Squarespace Templates
+                               & Website Designs"
+   Body text length      : 6,139 characters  /  921 words
+   JS execution          : ✓  All eval() calls returned expected values
+   CAPTCHA detected      : ✗  None found
+   Anti-bot challenge    : ✗  None encountered
+   Lazy-load elements    : 26 elements with [loading=lazy] or [data-lazy]
+                               (all above-the-fold content loaded without
+                               requiring scroll events)
+   Verdict               : Fully accessible headlessly
+
+   Score breakdown:
+     Content availability  →  4 / 5  (26 lazy elements present; all key
+                                       content was loaded on snapshot but
+                                       some below-fold media deferred)
+     CAPTCHA / anti-bot    →  3 / 3  (clean pass)
+     JS execution          →  2 / 2  (reliable throughout audit)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8. TOP 3 CRITICAL ISSUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ① ZERO proactive AI readiness infrastructure
+     Neither /agents.md nor /llms.txt is present. These 13 missing points
+     are the largest single contributor to the C grade. Both files require
+     no platform changes — they're plain-text, can be hosted externally and
+     proxied, and signal to agent operators that GoLive is agent-friendly.
+     In an ad-tech and agent-shopping context, this matters: agents will
+     increasingly check for agents.md before attempting interactions.
+
+   ② JSON-LD schemas are Squarespace stubs with empty critical fields
+     Both WebSite.description and LocalBusiness.address/openingHours are
+     empty strings. An AI agent (or LLM reading structured data) sees a
+     business with no description and no location — untrustworthy signal.
+     This is a content problem, not a code problem. The schema markup exists;
+     it just needs to be populated in Squarespace's structured data settings.
+
+   ③ Heading hierarchy inversion in the "How It Works" section
+     A Squarespace template quirk causes the page to jump h2 → h4 and then
+     nest h3 inside h4 (inverted). Agents using heading structure to build
+     a page outline will produce a malformed outline. Screen readers and
+     agent navigation systems that traverse headings sequentially will
+     encounter this as noise. This requires a template/CSS-level fix.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   QUICK WINS  (implement in < 1 week, no platform rebuild required)
+   ──────────────────────────────────────────────────────────────────
+
+   • Create /agents.md at the site root
+     Declare: permitted automated interactions (browsing, product lookup,
+     booking flow), rate limits, preferred entry points, contact for agent
+     operators. Host on a CDN or proxy from Squarespace's code injection
+     if direct root file hosting is unavailable. Gains up to 8 pts.
+
+   • Create /llms.txt at the site root
+     List primary content sections: Template Shop, Custom Design, Portfolio,
+     Blog, About — with URLs and 1-line descriptions. Follows the llms.txt
+     spec (https://llmstxt.org). Gains up to 4 pts.
+
+   • Populate the Squarespace LocalBusiness + WebSite schema fields
+     In Squarespace → Settings → SEO → Structured Data, fill in:
+     description (WebSite), address, and business hours (LocalBusiness).
+     This costs 5 minutes and moves the JSON-LD score from 4/8 to ~7/8.
+
+   • Add aria-label to image-only template gallery links (e25, e27, e29)
+     Each unlabeled thumbnail link should carry aria-label="View [Template Name]
+     template" matching its sibling text link. Can be done via Squarespace
+     code injection targeting those specific anchor elements.
+
+   STRATEGIC  (longer-term, higher engineering effort)
+   ──────────────────────────────────────────────────────────────────
+
+   • Fix the heading hierarchy in the "How It Works" section
+     Change the section label from h4 to h2 (or remove as a heading and
+     use a styled paragraph). The step headings (1, 2, 3) should be h3.
+     This is a Squarespace template-level change — may require editing the
+     underlying template or injecting CSS that demotes/promotes the elements.
+
+   • Add aria-label to distinguish primary nav from footer nav
+     The two <nav> elements are semantically identical to agents. Add:
+     <nav aria-label="Primary navigation"> and
+     <nav aria-label="Footer navigation">
+     via Squarespace code injection wrapping or template override.
+
+   • Add a semantic <footer> element (or role="contentinfo")
+     Currently footer content lives in a generic container. Agents looking
+     for footer landmarks will not find one. Add role="contentinfo" to the
+     outermost footer container via code injection.
+
+   • Resolve the "SHOP TEMPLATES" anchor-link ambiguity
+     The sticky nav "SHOP TEMPLATES" link behaves as a scroll anchor rather
+     than a route to /shop. Either: (a) make it navigate to /shop, or
+     (b) add aria-label="Browse template shop" to distinguish intent from
+     the name "SHOP TEMPLATES" which implies a distinct destination.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+10. CLOSING NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   • Audit was performed on the homepage (/) and one sub-page
+     (/squarespace-website-design). Template shop (/shop) and portfolio
+     pages were not individually audited — those pages may have different
+     accessibility characteristics.
+
+   • The site runs on Squarespace. Several issues (heading hierarchy,
+     landmark semantics, footer structure) are constrained by the platform.
+     Where Squarespace code injection or Developer Mode is available,
+     targeted fixes are possible without leaving the platform.
+
+   • The CTA "BOOK A FREE CALL" routes to Calendly (external domain).
+     This is outside the scope of this audit but agents following the
+     booking flow will encounter Calendly's own accessibility model.
+     Calendly is generally agent-accessible but agents must be prepared
+     for the domain change.
+
+   • robots.txt is Squarespace-generated and AI bots inherit the same
+     minimal restrictions as all crawlers. Content paths are open.
+     Updating robots.txt to explicitly welcome named AI bots would move
+     this sub-score from 2/3 to 3/3.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   SCORE SUMMARY
+   ┌──────────────────────────────────┬─────────┬────────────┐
+   │ Dimension                        │ Max Pts │ Score      │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ Proactive AI Readiness           │   15    │    2       │
+   │ Accessibility Tree Quality       │   25    │   15       │
+   │ Interactive Element Coverage     │   20    │   16       │
+   │ Structured Data / Schema         │   15    │   11       │
+   │ Agent Navigation Fluency         │   15    │   14       │
+   │ Bot Resistance / Reliability     │   10    │    9       │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ TOTAL                            │  100    │   67       │
+   │ GRADE                            │         │    C       │
+   └──────────────────────────────────┴─────────┴────────────┘
+
+   Grade C (55–74): Functional but agents encounter friction on key flows.
+   Highest-leverage fix: add /agents.md + /llms.txt (+13 pts, Grade B).
+
+════════════════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+   agent-browser v0.15.1 · Session: golivehq
+════════════════════════════════════════════════════════════════════════════

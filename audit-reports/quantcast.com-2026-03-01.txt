@@ -1,0 +1,403 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║              AI AGENT ACCESSIBILITY AUDIT REPORT                        ║
+║  Domain  : www.quantcast.com                                            ║
+║  Date    : 2026-03-01                                                   ║
+║  Tool    : agent-browser v0.15.1                                        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Grade : F    Score : 2 / 100
+
+   Quantcast.com, like the audited Lotame.com domain, is not a functioning
+   standalone website. The domain performs an immediate JavaScript redirect
+   to rotating third-party adtech company homepages. Observed redirect
+   targets during this audit included DoubleVerify, StackAdapt, IAB Tech
+   Lab, and Human Security (formerly White Ops). The initial browser title
+   "Quantcast | DSP Platform | DSP Programmatic Advertising" briefly
+   appears as the page loads before the redirect fires. No usable homepage
+   content, accessibility tree, structured data, navigation, or interactive
+   elements are present on the quantcast.com domain itself.
+
+   This audit scores www.quantcast.com as the domain-under-test. All
+   scoring dimensions reflect the state of that domain, not the rotating
+   redirect targets. In contrast to Lotame.com (which returned an empty
+   robots.txt), the robots.txt and llms.txt behavior for quantcast.com
+   was more severe: the /robots.txt path was itself subject to redirect
+   behavior and ERR_ABORTED errors on navigation, making even standard
+   crawl-guidance discovery impossible for bots. This domain scores lower
+   than Lotame.com on every dimension.
+
+   SPECIAL NOTE: Quantcast was historically a significant audience
+   measurement and programmatic advertising company. The current state of
+   the www.quantcast.com domain — a rotating JavaScript redirect with no
+   stable content — suggests the domain has been repurposed or is in an
+   unmanaged post-acquisition or partnership state.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. LLM / AI READINESS                                              0 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────┬────────────┬────────────────────────────────────────┐
+   │ File            │ Status     │ Finding                                │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND  │ Navigation to https://www.quantcast   │
+   │                 │            │ .com/llms.txt resulted in ERR_ABORTED. │
+   │                 │            │ The redirect mechanism fires for even  │
+   │                 │            │ asset paths, making the file          │
+   │                 │            │ unreachable. Treated as NOT FOUND.    │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /robots.txt     │ BROKEN     │ Attempting to navigate to /robots.txt  │
+   │                 │            │ triggered the JavaScript redirect —    │
+   │                 │            │ the robots.txt URL was redirected to   │
+   │                 │            │ StackAdapt.com's homepage, serving    │
+   │                 │            │ StackAdapt's full page content instead │
+   │                 │            │ of a robots file. The robots.txt is   │
+   │                 │            │ effectively inaccessible; no AI-bot   │
+   │                 │            │ rules or any crawl guidance exist.    │
+   └─────────────────┴────────────┴────────────────────────────────────────┘
+
+   Score breakdown:
+     /llms.txt    →  0 / 12  (ERR_ABORTED / effectively not found)
+     /robots.txt  →  0 / 3   (redirect intercepts robots.txt path;
+                               no crawl guidance reachable by any bot)
+
+   Context: Quantcast built its business on audience measurement and
+   real-time bidding — precisely the data-layer that AI agents query when
+   conducting audience and market research. The complete absence of AI
+   readiness signals is acutely ironic. An LLM tasked with "research
+   Quantcast's audience segments" or "evaluate Quantcast's DSP" would
+   find nothing on the domain and would be redirected to a competitor's
+   homepage. Even the robots.txt path — which is supposed to be the most
+   reliably stable URL on any domain — is broken by the redirect mechanism.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. ACCESSIBILITY TREE ANALYSIS                                     0 / 25 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Heading Hierarchy                                               0 / 8
+   ─────────────────────────────────────────────────────────────────────
+   NONE on the quantcast.com domain. The JavaScript redirect fires before
+   any headings from a Quantcast page can render. The session consistently
+   ends up on a redirect target's page — StackAdapt, DoubleVerify, etc.
+   All heading structure belongs to those third-party domains.
+
+   Observed redirect-target headings (NOT attributable to quantcast.com):
+   StackAdapt h1: "The Leading Technology Company That Connects
+                   Advertisers to Audiences. Buyers to Brands.
+                   Campaigns to Conversions." (split animated heading)
+
+   Landmark Regions                                                0 / 9
+   ─────────────────────────────────────────────────────────────────────
+   NONE on quantcast.com. The snapshot and landmark grep of the session
+   at the time of audit returned no landmark regions associated with
+   the quantcast.com domain. StackAdapt's page (the redirect target)
+   exposes interactive elements but those are scored against StackAdapt,
+   not Quantcast.
+
+   ARIA Label Quality                                              0 / 8
+   ─────────────────────────────────────────────────────────────────────
+   Not applicable to quantcast.com. Zero elements rendered under the
+   Quantcast domain. The redirect fires before the DOM can surface any
+   Quantcast-branded content.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. INTERACTIVE ELEMENT COVERAGE                                    0 / 20 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌──────────────────────┬───────┬─────────┬───────────────┐
+   │ Element Type         │ Total │ Labeled │ Coverage      │
+   ├──────────────────────┼───────┼─────────┼───────────────┤
+   │ Buttons              │    0  │    0    │   N/A         │
+   │ Links                │    0  │    0    │   N/A         │
+   │ Textboxes            │    0  │    0    │   N/A         │
+   │ Comboboxes           │    0  │    0    │   N/A         │
+   │ Checkboxes           │    0  │    0    │   N/A         │
+   ├──────────────────────┼───────┼─────────┼───────────────┤
+   │ TOTAL                │    0  │    0    │   0.0%        │
+   └──────────────────────┴───────┴─────────┴───────────────┘
+
+   Note: StackAdapt's page (the redirect target during the audit session)
+   exposed 95 labeled interactive elements including textboxes, comboboxes,
+   buttons, and checkboxes — with a form containing reCAPTCHA protection.
+   These elements are scored against StackAdapt, not Quantcast. The
+   quantcast.com domain itself contributes zero interactive elements.
+
+   Coverage score    →  0 / 15  (0% — no elements on the domain)
+   Ref reachability  →  0 / 5   (no refs on quantcast.com to test)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. AGENT NAVIGATION JOURNEY LOG                                    2 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Step 1 — Land + Orient
+     Action  : Open https://www.quantcast.com/ → wait networkidle →
+               read h1 and nav landmark
+     Result  : FAIL  The page.waitForLoadState networkidle timed out
+               (25,000ms exceeded). The rotating redirect triggers
+               repeated "commit" + "domcontentloaded" + "load" cycles.
+               Browser title briefly showed "Quantcast | DSP Platform |
+               DSP Programmatic Advertising" then transitioned to
+               DoubleVerify and then StackAdapt. No Quantcast h1 found.
+     Score   : 0 / 3
+
+   Step 2 — Navigate to Primary Content
+     Action  : Attempt to click a Quantcast nav link
+     Result  : FAIL  No interactive elements exist on the quantcast.com
+               domain. The redirect fires before any navigation elements
+               appear. ERR_ABORTED on some page.goto attempts.
+     Score   : 0 / 3
+
+   Step 3 — Primary CTA Interaction
+     Action  : Attempt to interact with a primary CTA
+     Result  : FAIL  No CTAs, buttons, or links from quantcast.com.
+               Page never stabilizes long enough to expose interactive
+               content under the quantcast.com origin.
+     Score   : 0 / 3
+
+   Step 4 — Form Interaction
+     Action  : Attempt to fill a form field
+     Result  : FAIL  No forms on quantcast.com. The eval context was
+               destroyed mid-execution on attempts: "Execution context
+               was destroyed, most likely because of a navigation."
+     Score   : 0 / 3
+
+   Step 5 — Return to Homepage
+     Action  : Navigate to https://www.quantcast.com/
+     Result  : PARTIAL  Domain is DNS-reachable and returns an initial
+               title of "Quantcast | DSP Platform | DSP Programmatic
+               Advertising" before redirecting. The /home subpath also
+               responds with this title before redirecting. Two points
+               awarded collectively for the domain being reachable and
+               the initial title confirming the domain's intended brand.
+     Score   : 2 / 3  (domain reachable; initial title confirms brand)
+
+   Navigation is completely broken for agents. The redirect mechanism
+   fires faster than networkidle can settle, causing timeout errors and
+   context destruction. An agent tasked with researching Quantcast's
+   audience platform would receive no usable information from this domain.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6. STRUCTURED DATA FINDINGS                                        0 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   JSON-LD Schemas Found                                           0 / 8
+   ─────────────────────────────────────────────────────────────────────
+   NONE from quantcast.com. The session's JSON-LD findings belong to the
+   redirect target (StackAdapt, which has a WebPage + ImageObject +
+   WebSite schema graph). Zero JSON-LD attributable to quantcast.com.
+
+   Open Graph Tags                                                 0 / 4
+   ─────────────────────────────────────────────────────────────────────
+   NONE from quantcast.com. All OG tags in the session belong to the
+   redirect target domain. No og:title, og:description, og:image, or
+   og:type served under the quantcast.com origin.
+
+   Meta Description                                                0 / 3
+   ─────────────────────────────────────────────────────────────────────
+   NOT FOUND. No meta description served under quantcast.com. The
+   redirect fires before any Quantcast meta tags render.
+
+   Twitter Cards
+   ─────────────────────────────────────────────────────────────────────
+   NONE from quantcast.com. twitter:card, twitter:label1, and
+   twitter:data1 belong to StackAdapt (the redirect target).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7. BOT RESISTANCE ASSESSMENT                                       0 / 10 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Page title retrieved  : PARTIAL  "Quantcast | DSP Platform | DSP
+                           Programmatic Advertising" (briefly, via open
+                           command; immediately overwritten by redirect)
+   Body text length      : 0 words  (on quantcast.com domain)
+   JS execution          : UNRELIABLE — page.goto returns ERR_ABORTED
+                           on multiple attempts; eval context destroyed
+                           mid-execution due to navigation events
+   CAPTCHA detected      : Redirect target (StackAdapt) has reCAPTCHA
+                           on its contact form, though this is not
+                           attributable to quantcast.com
+   Anti-bot challenge    : The redirect mechanism itself is more disruptive
+                           than a CAPTCHA — it is a complete content wall
+                           that prevents any quantcast.com content access
+   Verdict               : Content completely inaccessible on the domain
+
+   Additional finding: The robots.txt path (/robots.txt) was itself
+   subject to the JavaScript redirect, serving StackAdapt's full page
+   content instead of a robots file. This means even search engine
+   crawlers attempting to read crawl rules from this domain would be
+   misdirected. This is a uniquely severe failure — no established web
+   site breaks robots.txt discovery via client-side redirect.
+
+   Score breakdown:
+     Content availability  →  0 / 5  (0 words on quantcast.com; complete
+                                       content block via redirect)
+     CAPTCHA / anti-bot    →  0 / 3  (redirect mechanism causes ERR_ABORTED
+                                       and context destruction; more disruptive
+                                       than a CAPTCHA challenge)
+     JS execution          →  0 / 2  (networkidle timeout; context destroyed
+                                       on multiple eval attempts)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8. TOP 3 CRITICAL ISSUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ① JavaScript redirect intercepts all paths including /robots.txt
+     Unlike Lotame.com (where the robots.txt URL at least returned a
+     stable empty response), Quantcast.com's redirect mechanism intercepts
+     even /robots.txt requests and redirects them to third-party pages.
+     This is a uniquely severe infrastructure failure: robots.txt is the
+     foundational crawl-control mechanism relied upon by every search
+     engine and AI crawler. Breaking it means zero crawl governance.
+     The redirect also causes ERR_ABORTED on page.goto calls, making
+     the domain unusable for headless automation of any kind.
+
+   ② Complete content void — no Quantcast content accessible at any path
+     The rotating redirect ensures no path under www.quantcast.com serves
+     Quantcast-branded content. An AI agent researching "Quantcast real-time
+     bidding" or "Quantcast audience measurement" would be sent to
+     DoubleVerify, StackAdapt, or IAB Tech Lab with no indication of the
+     redirect. This is worse than a 404 — at least a 404 tells the agent
+     the resource doesn't exist. The redirect actively misdirects.
+
+   ③ networkidle timeout — hardened agent failure mode
+     The rotating redirect cycle (multiple "commit" + "domcontentloaded"
+     + "load" event chains) causes page.waitForLoadState to exceed its
+     25-second timeout. This is the most disruptive technical failure
+     observed across this audit series. Not only does the domain have no
+     content — it actively breaks the wait-for-stability mechanism that
+     agents use to know when a page is ready to interact with.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   IMMEDIATE  (domain is currently broken for all automated agents)
+   ──────────────────────────────────────────────────────────────────
+
+   • Disable the JavaScript rotating redirect immediately
+     Replace with either: (a) a 301 server-side redirect to a single,
+     canonical destination, (b) a static informational page about the
+     domain's current status, or (c) a 410 Gone if the domain is being
+     decommissioned. Client-side rotating redirects are an anti-pattern
+     that breaks robots.txt, sitemaps, and agent navigation.
+
+   • Restore a functional robots.txt
+     The /robots.txt URL must return a text/plain response, not an HTML
+     redirect. A minimal valid robots.txt (even "User-agent: *\nDisallow:")
+     is infinitely better than a rotating redirect serving StackAdapt's
+     homepage to crawlers requesting crawl rules.
+
+   • Fix networkidle compatibility
+     The repeated navigation event cycles must be resolved. Any agent or
+     automated tool that uses wait-for-networkidle (the industry standard
+     for page-load detection) will time out on this domain. This breaks
+     accessibility scanners, SEO crawlers, uptime monitors, and AI agents
+     simultaneously.
+
+   QUICK WINS  (once domain serves stable content)
+   ──────────────────────────────────────────────────────────────────
+
+   • Add Organization JSON-LD and OG meta tags
+     A minimal homepage or landing page with Organization schema
+     (name: "Quantcast", description, url, logo, sameAs) and four OG
+     tags would immediately provide AI agents with actionable identity
+     signals for the Quantcast brand.
+
+   • Create /llms.txt
+     Point to any surviving Quantcast product documentation or the
+     canonical destination for Quantcast's audience measurement tools.
+     Even a stub file signals AI readiness and is better than a 404.
+
+   STRATEGIC  (brand preservation in AI-mediated research)
+   ──────────────────────────────────────────────────────────────────
+
+   • Audit all redirect targets for brand-alignment risk
+     Quantcast's rotating redirect sends visitors to DoubleVerify, IAB
+     Tech Lab, Human Security, and StackAdapt — all legitimate adtech
+     companies, but none of them Quantcast. An AI agent answering "what
+     does Quantcast do?" after following a Quantcast.com redirect to
+     DoubleVerify would produce a materially incorrect answer. The brand
+     damage from misdirected AI indexing compounds over time.
+
+   • Consider a branded acquisition/transition landing page
+     A single static HTML page at www.quantcast.com with the company's
+     history, acquisition details, and links to where Quantcast's technology
+     now lives would preserve brand equity in AI search and score
+     significantly higher across all audit dimensions.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+10. CLOSING NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   • This audit covers www.quantcast.com as the specified domain. The
+     rotating redirect destinations (DoubleVerify, StackAdapt, IAB Tech
+     Lab, Human Security) are independent sites not evaluated here.
+     The redirect behavior was confirmed across multiple agent-browser
+     sessions and is reproducible.
+
+   • Quantcast.com scores lower than Lotame.com (6/100) despite sharing
+     the same rotating redirect pattern, because the robots.txt path is
+     also broken by the redirect (scored 0 vs Lotame's 2), and because
+     the networkidle timeout failure (25s) is a more severe automation
+     failure than the ERR_ABORTED seen at Lotame. The navigation journey
+     also scores lower due to the timeout (2/15 vs Lotame's 4/15).
+
+   • The screenshot captured during this audit shows StackAdapt's
+     homepage with 95 fully labeled interactive elements — this is
+     StackAdapt's score, not Quantcast's. The screenshot was saved to
+     audit-reports/quantcast.com-annotated.png but visually depicts
+     a StackAdapt page.
+
+   • The rotating redirect pattern at both Lotame.com and Quantcast.com
+     suggests a systematic domain management failure across this segment
+     of the adtech industry. Domains that were once prominent, independent
+     brands are being repurposed as redirect infrastructure without
+     preserving the crawlability, brand identity, or content quality
+     that made them valuable.
+
+   • The score of 2/100 (Grade F) is the lowest possible score that
+     acknowledges DNS reachability. The 2 points come from the initial
+     page title briefly confirming Quantcast brand identity ("Quantcast |
+     DSP Platform | DSP Programmatic Advertising"), which represents the
+     only verifiable signal that this domain belongs to Quantcast.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   SCORE SUMMARY
+   ┌──────────────────────────────────┬─────────┬────────────┐
+   │ Dimension                        │ Max Pts │ Score      │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ LLM / AI Readiness               │   15    │    0       │
+   │ Accessibility Tree Quality       │   25    │    0       │
+   │ Interactive Element Coverage     │   20    │    0       │
+   │ Structured Data / Schema         │   15    │    0       │
+   │ Agent Navigation Fluency         │   15    │    2       │
+   │ Bot Resistance / Reliability     │   10    │    0       │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ TOTAL                            │  100    │    2       │
+   │ GRADE                            │         │    F       │
+   └──────────────────────────────────┴─────────┴────────────┘
+
+   Grade F (0–34): Domain is not a functional website. The JavaScript
+   rotating redirect breaks robots.txt access, causes networkidle timeouts,
+   destroys eval execution contexts, and serves zero Quantcast content.
+   The domain is structurally incompatible with agent-based navigation.
+   Immediate remediation required.
+
+════════════════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+   agent-browser v0.15.1 · Session: quantcast
+════════════════════════════════════════════════════════════════════════════

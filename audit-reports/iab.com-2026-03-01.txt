@@ -1,0 +1,485 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║              AI AGENT ACCESSIBILITY AUDIT REPORT                        ║
+║  Domain  : www.iab.com                                                  ║
+║  Date    : 2026-03-01                                                   ║
+║  Tool    : agent-browser v0.15.1                                        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Grade : C    Score : 67 / 100
+
+   IAB is the defining contradiction of this audit series. As the industry
+   body that literally sets digital advertising standards — and has
+   published extensively on AI's role in the future of media — they ship
+   a comprehensive /llms.txt, a rich interconnected JSON-LD @graph, and
+   a SearchAction schema. Then they actively block ClaudeBot, GPTBot, and
+   every major AI crawler in their robots.txt. The site's operational
+   agent-accessibility is also genuinely weak: the heading hierarchy is
+   effectively random, dozens of interactive elements share identical or
+   meaningless labels, and most research content sits behind an
+   account gate that agents cannot pass. The score is pulled up by strong
+   structured data and zero bot resistance; it is dragged down by an
+   accessibility tree that would challenge any automated system.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. LLM / AI READINESS                                             12 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────┬────────────┬────────────────────────────────────────┐
+   │ File            │ Status     │ Finding                                │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /llms.txt       │ FOUND ✓    │ Comprehensive, 31KB spec-compliant     │
+   │                 │            │ manifest. Includes full org description │
+   │                 │            │ (IAB founding mission, 700+ member     │
+   │                 │            │ base, Tech Lab affiliation), followed  │
+   │                 │            │ by structured ## Main Pages section    │
+   │                 │            │ with annotated links to Public Policy, │
+   │                 │            │ Legal Affairs, Experience Center, and  │
+   │                 │            │ more. Among the best-formed llms.txt   │
+   │                 │            │ files observed across all audits.      │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /robots.txt     │ FOUND ✗    │ Cloudflare-managed Content-Signal      │
+   │                 │            │ extension. Declares:                   │
+   │                 │            │   search=yes, ai-train=no              │
+   │                 │            │ Then EXPLICITLY disallows by name:     │
+   │                 │            │   Amazonbot, Applebot-Extended,        │
+   │                 │            │   Bytespider, CCBot, ClaudeBot,        │
+   │                 │            │   Google-Extended, GPTBot,             │
+   │                 │            │   meta-externalagent                   │
+   │                 │            │ Every major AI crawler is blocked.     │
+   └─────────────────┴────────────┴────────────────────────────────────────┘
+
+   Score breakdown:
+     /llms.txt    →  12 / 12  (best-in-class: spec-compliant, comprehensive,
+                               full org description + annotated page index)
+     /robots.txt  →   0 / 3   (explicitly disallows all major AI crawlers)
+
+   The tension here is significant and worth flagging to your client.
+   IAB has published position papers on AI scraping legislation, and their
+   robots.txt reflects that policy: they distinguish between search
+   indexing (permitted) and AI training/usage (blocked). The llms.txt
+   is almost certainly aimed at RAG-style AI use cases where the agent
+   fetches content in real-time rather than crawling. This is a deliberate,
+   sophisticated stance — not an oversight. However, by scoring dimension,
+   the explicit AI bot blocks zero out the robots.txt sub-score.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. ACCESSIBILITY TREE ANALYSIS                                     8 / 25 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Heading Hierarchy                                               1 / 8
+   ─────────────────────────────────────────────────────────────────────
+   The h1 element is the logo link in the navigation, with empty visible
+   text (the DOM innerText returns ""). The main content has NO h1.
+   Below that, headings appear in this order across the page:
+
+     [nav] h1  "IAB"           ← logo link in navigation, empty text
+     [main] h3  "Upcoming at IAB"      ← first content heading, skips h1+h2
+              h5  "Modernizing MMM..." ← jumps h3→h5 for event titles
+              h5  "2026 IAB NewFronts"
+              h5  [6 more event titles]
+              h4  "Conferences and Webinars"
+              h4  "Public Policy"
+              h4  "Tech Lab" / "Project Eidos"
+              h3  "The Interactive Advertising Bureau (IAB) empowers..."
+              h2  "Get the latest from IAB in your inbox"
+              h2  "Getting Involved"
+              h2  "Why Learn with IAB"
+              h2  "Questions about IAB?"
+              h2  "From the Knowledge Center"
+
+   This is not a hierarchy — it is heading levels used for font sizing.
+   The sequence h3 → h5 → h4 → h3 → h2 defies any logical document
+   structure. An agent building a page outline from headings would
+   produce complete noise.
+
+   Landmark Regions                                                4 / 9
+   ─────────────────────────────────────────────────────────────────────
+   ✓  <nav>    present (unlabeled)
+   ✓  <main>   present
+   ✓  Multiple <region> elements present for content cards
+   ✗  Nav has no aria-label
+   ✗  Regions are unlabeled (no aria-label on any of them)
+   ✗  No <footer role="contentinfo"> landmark
+
+   ARIA Label Quality                                              3 / 8
+   ─────────────────────────────────────────────────────────────────────
+   Systematic labeling failures across three patterns:
+
+   PATTERN 1 — "+N" count buttons (8 instances)
+     @e14 button "+1", @e17 button "+3", @e22 button "+5", @e27 "+1",
+     @e30 "+3", @e35 "+2", @e44 "+2", @e47 "+3"
+     These are "show N more tags" expanders on content cards. An agent
+     sees only the count — zero context about what is being expanded,
+     which card they belong to, or what content type they reveal.
+
+   PATTERN 2 — "Menu" links (8 instances, all identical)
+     @e18, @e23, @e28, @e31, @e36, @e40, @e45, @e48 — all labeled "Menu"
+     These appear to be kebab/options menus on individual content cards.
+     Eight identical accessible names mean agents cannot distinguish
+     which card's menu they are clicking.
+
+   PATTERN 3 — "Close" buttons (5 instances, all identical)
+     @e74–@e78 — all labeled "Close"
+     No indication of what each closes. An agent performing a
+     multi-step interaction cannot reliably target the correct one.
+
+   ADDITIONAL — Blank button (@e13 on research page)
+     An unnamed button with no accessible label at all.
+
+   Functional but suboptimal — Social links use CSS icon class names
+   as their accessible text ("facebook", "twitter", "linkedin",
+   "instagram", "youtube-play"). Technically a name exists but it
+   lacks capitalisation and descriptive context.
+
+   Total problematic elements: ~23 / ~79 = 29%
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. INTERACTIVE ELEMENT COVERAGE                                   12 / 20 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌──────────────────────┬───────┬──────────┬───────────────┐
+   │ Element Type         │ Total │ Labeled  │ Coverage      │
+   ├──────────────────────┼───────┼──────────┼───────────────┤
+   │ Buttons              │   22  │    9     │    40.9%      │
+   │ Links                │   56  │   48     │    85.7%      │
+   │ Searchbox            │    1  │    1     │   100.0%      │
+   ├──────────────────────┼───────┼──────────┼───────────────┤
+   │ TOTAL                │   79  │   58     │    73.4%      │
+   └──────────────────────┴───────┴──────────┴───────────────┘
+
+   Buttons are the weak link: 13 of 22 have ambiguous or missing names
+   (+N expanders, blank, and duplicate Close labels).
+
+   Coverage score    →   9 / 15  (73.4%, Band 70–84%)
+   Ref reachability  →   3 / 5   (major refs work; the eight identical
+                                   "Menu" links and five identical "Close"
+                                   buttons are unreliably targetable —
+                                   an agent cannot deterministically
+                                   select the correct one)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. AGENT NAVIGATION JOURNEY LOG                                   12 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Step 1 — Land + Orient
+     Action  : Read h1 and nav landmark
+     Result  : ⚠ PARTIAL  h1 exists in the nav (logo link, text "IAB")
+               but the main content has no h1. DOM innerText returns "".
+               Nav exposes: Leadership & Advocacy, Market Intelligence
+               & Best Practices, Conferences & Events, Get Involved.
+               Agent can read nav but cannot identify page purpose
+               from heading structure alone.
+     Score   : 2 / 3
+
+   Step 2 — Navigate to Primary Content
+     Action  : Click "Market Intelligence & Best Practices" (e4)
+               → dropdown appeared, clicked "Research & Insights" menuitem
+               → wait networkidle → read h1
+     Result  : ✓ SUCCESS  Navigated to /research/
+               New h1 = "Industry Research & Insights"
+               Required two interactions: dropdown open + menuitem click.
+               Drop-down menuitems ARE accessible as distinct elements ✓
+     Score   : 2 / 3  (indirect path required; dropdown pattern adds
+                        friction vs direct nav link)
+
+   Step 3 — Primary CTA Interaction
+     Action  : Click report link "The AI Ad Gap Widens" → wait
+     Result  : ⚠ PARTIAL  Navigated to /insights/the-ai-gap-widens/
+               Report content gated: "Claim your free account to
+               continue reading. Log In or Create Account."
+               CTA click succeeded; content is behind auth wall.
+               Agent cannot read report content without credentials.
+     Score   : 2 / 3
+
+   Step 4 — Form / Download Interaction   ← DEEP NAVIGATION
+     Action  : Navigated to /iab-annual-reports/ → located
+               "Download PDF" link (e12) → executed download command
+     Result  : ✓ SUCCESS  2025 IAB Annual Report downloaded
+               File: iab-2025-annual-report.pdf (25MB)
+               Path: ./audit-reports/iab-2025-annual-report.pdf
+               This was the only non-gated downloadable content found.
+               All research reports require account creation.
+     Score   : 3 / 3
+
+   Step 5 — Return to Homepage
+     Action  : Direct open https://www.iab.com/
+     Result  : ✓ SUCCESS  Homepage loaded cleanly.
+     Score   : 3 / 3
+
+   ─────────────────────────────────────────────────────────────────────
+   DEEP NAVIGATION LOG (beyond standard 5 steps)
+   ─────────────────────────────────────────────────────────────────────
+   Pages visited during extended exploration:
+
+   /  →  Loaded. h1 empty in main. Heading structure disordered.
+
+   /research/  (Market Intelligence > Research & Insights)
+     h1: "Industry Research & Insights"
+     Reports found: AI Ad Gap Widens, 2025 Creator Economy Ad Spend,
+     AI Adoption Surging, State of Data 2026, 2026 Outlook.
+     All gated. Filter buttons (Topic, Type) accessible but +N
+     expanders on cards were unresolvable without context.
+
+   /insights/the-ai-gap-widens/  (selected report)
+     h1: "The AI Ad Gap Widens"
+     Content preview: 2–3 paragraphs then hard login gate.
+     No download option. Sponsors (Kalshi, Volvo, Coca-Cola) listed.
+
+   /insights/2026-outlook/  (attempted second report)
+     h1: "2026 Outlook: A Snapshot of U.S. Ad Spend..."
+     Same gate pattern. Key finding visible before cut: "Ad spend
+     growth accelerates in 2026: +9.5%... AI dominates 2026 priorities:
+     5 of the top 6 buyer focus areas are AI."
+
+   /iab-annual-reports/  (public PDFs found here)
+     h1: "IAB Annual Reports"
+     11 years of annual reports publicly available as PDFs (2007–2025).
+     2025 IAB Annual Report successfully downloaded (25MB PDF).
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6. STRUCTURED DATA FINDINGS                                       13 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   JSON-LD Schemas Found                                           7 / 8
+   ─────────────────────────────────────────────────────────────────────
+   One @graph block with four interconnected types — well-structured:
+
+   WebPage  (@id: https://www.iab.com/)
+     url, name, datePublished (2014), dateModified (2023),
+     description, breadcrumb @id ref, inLanguage ✓
+
+   BreadcrumbList  (home breadcrumb) ✓
+
+   WebSite  (@id: https://www.iab.com/#website)
+     name, description, publisher @id ref
+     potentialAction: SearchAction with urlTemplate ✓
+     → This gives agents a structured "how to search this site" signal.
+     An AI agent can use the SearchAction to construct:
+     https://www.iab.com/?s={query}
+
+   Organization  (@id: https://www.iab.com/#organization)
+     name: "IAB", url, logo (ImageObject with dimensions) ✓
+     sameAs: Facebook, X/Twitter, LinkedIn ✓
+     MISSING: description, foundingDate, legalName, contactPoint
+     → Organization schema exists but is sparse vs. what IAB
+       could declare (700+ member trade association, founded 1996,
+       HQ in NYC — all absent)
+
+   Score: 7/8 (excellent @graph structure with SearchAction, but
+   Organization is underpopulated given IAB's public profile)
+
+   Open Graph Tags                                                 3 / 4
+   ─────────────────────────────────────────────────────────────────────
+   og:title       : "Home"  ← GENERIC — should be brand + tagline
+   og:description : "Interactive Advertising Bureau (IAB) empowers
+                     the media and marketing industries..." ✓
+   og:image       : WordPress CDN (1220×669) ✓
+   og:type        : "website" ✓
+   og:url         : https://www.iab.com/ ✓
+   og:locale      : "en_US" ✓
+   Docked 1 point: og:title "Home" is WordPress's default page title
+   leaking into Open Graph. Any social share from the homepage will
+   render with just "Home" as the title — a significant branding miss.
+
+   Meta Description                                                3 / 3
+   ─────────────────────────────────────────────────────────────────────
+   "Interactive Advertising Bureau (IAB) empowers the media and
+    marketing industries to thrive in the digital economy."
+   Length: ~107 characters ✓
+
+   Twitter Cards
+   ─────────────────────────────────────────────────────────────────────
+   twitter:card  : "summary_large_image" ✓
+   twitter:image : WordPress upload URL ✓
+   twitter:site  : "@iab" ✓
+   twitter:title : MISSING
+   twitter:description : MISSING
+   Card type is declared but no content tags — Twitter/X will attempt
+   to infer title/description from page meta, which may work, but
+   explicit declarations are recommended.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7. BOT RESISTANCE ASSESSMENT                                      10 / 10 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Page title retrieved  : ✓  "IAB"
+   Body text length      : 4,203 characters  /  635 words
+   JS execution          : ✓  Reliable across 5 pages visited
+   CAPTCHA detected      : ✗  None
+   Anti-bot challenge    : ✗  None (despite AI crawler blocks in robots.txt,
+                               headless browser browsing is unimpeded)
+   Lazy-load elements    : 0   (notable — no deferred images)
+   Verdict               : Fully accessible headlessly
+
+   Note: robots.txt blocks AI crawlers by user-agent, but these rules only
+   apply to crawlers that respect robots.txt (GPTBot, ClaudeBot, etc.).
+   A headless browser session does not identify as these bots, so the
+   browsing-based audit encounters no restrictions. The blocks would prevent
+   bulk AI training crawls, not agent-based interactions like this audit.
+
+   Score breakdown:
+     Content availability  →  5 / 5
+     CAPTCHA / anti-bot    →  3 / 3
+     JS execution          →  2 / 2
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8. TOP 3 CRITICAL ISSUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ① Heading hierarchy is non-functional for agents
+     The page has no effective h1 in main content (the logo link h1 is
+     empty text). Content headings jump: h3 → h5 → h4 → h3 → h2, in that
+     order. This is heading levels used as CSS font classes. Any agent
+     using document structure to understand the page — summarising,
+     navigating by section, or building a content model — will fail.
+     This is a WordPress theme-level issue requiring a template audit.
+
+   ② "+N", "Menu", and "Close" buttons make card interactions
+     non-deterministic for agents
+     With 8 identical "Menu" links, 8 identical "+N" count buttons,
+     and 5 identical "Close" buttons, an agent cannot reliably
+     interact with a specific card. It can find all "Menu" buttons
+     but has no way to know which card each belongs to without
+     inspecting DOM ancestry — which defeats the purpose of the
+     accessibility tree. This pattern is pervasive across the content
+     grid and affects every research/news card on the site.
+
+   ③ Virtually all research content is gated
+     During deep navigation, every research report encountered the
+     "Claim your free account" gate before substantive content was
+     visible. An AI agent operating on behalf of a buyer, researcher,
+     or journalist has no path to IAB research content without
+     first authenticating. Only the Annual Reports page offers
+     public PDFs. This is a business model decision, not purely a
+     technical one, but it severely limits agent utility.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   QUICK WINS  (implement in < 1 week)
+   ──────────────────────────────────────────────────────────────────
+
+   • Fix og:title — change "Home" to "IAB: Empowering the Media &
+     Marketing Industries" in WordPress SEO settings. This is a
+     one-field change in Yoast/RankMath and affects every social
+     share from the homepage.
+
+   • Add twitter:title and twitter:description meta tags to match
+     the OG equivalents — two lines of code.
+
+   • Add aria-label to the <nav> element: "Primary navigation".
+     Single attribute, significant improvement for agents parsing
+     multi-page navigation structure.
+
+   • Add aria-label to region elements — at minimum, give the
+     featured content carousels/regions a descriptive label so
+     agents can distinguish sections.
+
+   STRATEGIC  (requires theme/template-level work)
+   ──────────────────────────────────────────────────────────────────
+
+   • Fix the heading hierarchy — this is the highest-impact structural
+     change. The page needs:
+     - h1 in <main> (not the logo): should be the page's primary topic
+       (e.g. "Empowering the Digital Advertising Industry")
+     - h2 for major page sections (Upcoming Events, Featured Research,
+       Getting Involved, Knowledge Center)
+     - h3 for items within those sections
+     Current h3/h4/h5 usage should be mapped to h2/h3 based on
+     visual hierarchy. This is a WordPress template/block pattern change.
+
+   • Replace "+N" count buttons with descriptive aria-labels
+     Instead of "+3", use aria-label="Show 3 more tags for [article title]"
+     via data attributes in the template. This requires a small template
+     change but eliminates the most agent-hostile pattern on the site.
+
+   • Disambiguate "Menu" links with aria-label tied to card title
+     Each card's options/kebab menu should use aria-label="Options for
+     [article title]". Template-level change, one line per card component.
+
+   • Consider an agent-accessible content tier
+     IAB's research is its primary value proposition. Making report
+     abstracts, key findings (top 3 bullets), and methodology summaries
+     publicly available without gating would massively increase agent
+     utility. A structured summary section before the login gate —
+     even 200 words — would allow agents to surface IAB insights in
+     AI-mediated research and buying workflows.
+
+   • Populate the Organization schema
+     Add to the existing @graph: description ("The trade association
+     for the digital advertising industry, founded 1996, 700+ members"),
+     foundingDate: "1996", legalName: "Interactive Advertising Bureau",
+     numberOfEmployees, and contactPoint. IAB's identity data is
+     entirely public and well-documented.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+10. CLOSING NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   • Audit covered the homepage (/), /research/, two report pages
+     (/insights/the-ai-gap-widens/, /insights/2026-outlook/), and
+     /iab-annual-reports/. The dashboard, member portal, and gated
+     content were not accessible without credentials.
+
+   • The robots.txt stance deserves a dedicated conversation with the
+     IAB team. They have published draft legislation on AI scraping
+     (noted on their own homepage), which aligns with their robots.txt
+     blocking AI crawlers for training. However, the llms.txt suggests
+     they want to be discoverable by LLMs in real-time RAG contexts.
+     These are not contradictory positions, but the distinction is
+     subtle and worth articulating in their public comms.
+
+   • The 2025 IAB Annual Report (25MB PDF) was successfully downloaded
+     without authentication from /iab-annual-reports/. It is accessible
+     to any agent that can navigate to the page and execute a download.
+     File saved to: ./audit-reports/iab-2025-annual-report.pdf
+
+   • IAB uses WordPress + Cloudflare. The heading hierarchy and
+     accessibility label issues are largely a function of the WordPress
+     block theme's default heading assignments — a common problem for
+     publisher sites that use headings for typographic control rather
+     than semantic structure.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   SCORE SUMMARY
+   ┌──────────────────────────────────┬─────────┬────────────┐
+   │ Dimension                        │ Max Pts │ Score      │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ LLM / AI Readiness               │   15    │   12       │
+   │ Accessibility Tree Quality       │   25    │    8       │
+   │ Interactive Element Coverage     │   20    │   12       │
+   │ Structured Data / Schema         │   15    │   13       │
+   │ Agent Navigation Fluency         │   15    │   12       │
+   │ Bot Resistance / Reliability     │   10    │   10       │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ TOTAL                            │  100    │   67       │
+   │ GRADE                            │         │    C       │
+   └──────────────────────────────────┴─────────┴────────────┘
+
+   Grade C (55–74): Strong structured data and LLM readiness offset
+   by the weakest heading hierarchy and most ambiguous interactive
+   labels across all four audits. The contradiction between an
+   excellent llms.txt and a blanket AI crawler block is the defining
+   story of this site's agent-accessibility posture.
+
+════════════════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+   agent-browser v0.15.1 · Session: iab
+   Bonus: 2025 Annual Report downloaded → ./audit-reports/iab-2025-annual-report.pdf
+════════════════════════════════════════════════════════════════════════════

@@ -1,0 +1,393 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║              AI AGENT ACCESSIBILITY AUDIT REPORT                        ║
+║  Domain  : vercel.com                                                   ║
+║  Date    : 2026-03-01                                                   ║
+║  Tool    : agent-browser v0.15.1                                        ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. EXECUTIVE SUMMARY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Grade : B    Score : 82 / 100
+
+   Vercel's homepage is among the most agent-navigable sites audited:
+   perfect interactive element coverage, a flawless navigation journey,
+   a fully populated Organization schema, complete Open Graph coverage,
+   and zero bot resistance. A comprehensive /llms.txt manifest ships
+   natively. The score is held back almost entirely by the absence of
+   /agents.md and a heading hierarchy that sacrifices semantic correctness
+   for visual effect — both fixable without a platform overhaul.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+2. PROACTIVE AI READINESS                                          6 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────┬────────────┬────────────────────────────────────────┐
+   │ File            │ Status     │ Finding                                │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /agents.md      │ NOT FOUND  │ Fetch returns 200 but delivers the     │
+   │                 │            │ Next.js app shell HTML (~256KB) —      │
+   │                 │            │ catch-all router intercepts the path.  │
+   │                 │            │ No actual agent guidelines exist.      │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /llms.txt       │ FOUND ✓    │ Comprehensive, spec-compliant manifest.│
+   │                 │            │ Structured as "# Documentation" with   │
+   │                 │            │ full Vercel docs tree: Getting Started, │
+   │                 │            │ Projects, Deployments, Domains,        │
+   │                 │            │ Collaborate — all linked with          │
+   │                 │            │ descriptions. Well above minimum spec. │
+   ├─────────────────┼────────────┼────────────────────────────────────────┤
+   │ /robots.txt     │ FOUND      │ Single User-Agent: * block. No         │
+   │                 │            │ AI-specific bot rules (no GPTBot,      │
+   │                 │            │ ClaudeBot, CCBot entries at all).      │
+   │                 │            │ Standard path restrictions (/api/,     │
+   │                 │            │ /oauth, /confirm, etc.). Main content  │
+   │                 │            │ fully open. Neutral stance on AI bots. │
+   └─────────────────┴────────────┴────────────────────────────────────────┘
+
+   Score breakdown:
+     /agents.md   →  0 / 8  (file absent — Next.js catch-all masks missing file)
+     /llms.txt    →  4 / 4  (present, spec-compliant, comprehensive)
+     /robots.txt  →  2 / 3  (found, AI bots neither restricted nor explicitly
+                              welcomed — neutral)
+
+   Noteworthy: Vercel serving /llms.txt natively is exceptional and puts
+   them ahead of ~95% of sites. The /agents.md gap is the only missing piece
+   in this dimension. Because the Next.js router returns 200 for all routes,
+   simply dropping an agents.md file into the public/ directory would be
+   immediately accessible. This is a 5-minute commit.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+3. ACCESSIBILITY TREE ANALYSIS                                    17 / 25 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Heading Hierarchy                                               4 / 8
+   ─────────────────────────────────────────────────────────────────────
+   Single h1 ✓: "Build and deploy on the AI Cloud."
+   The hierarchy then makes a structural misstep:
+
+     h1  "Build and deploy on the AI Cloud."
+       h3  "Your product, delivered."       ← SKIP: h1 → h3, no h2
+       h3  "Agents" / "AI Apps" / "Web Apps" / "Composable Commerce"
+       h3  "Multi-tenant Platform"
+     h2  "Framework-Defined Infrastructure"  ← h2 arrives AFTER h3s
+     h2  "Scale your"
+     h2  "Deploy once, deliver everywhere."
+     h2  "Fluid Compute" / "AI Gateway"
+     h2  "Deploy your first app in seconds."
+       h3  "S t a r t D e p l o y i n g"   (animated decorative text as h3)
+     h2  [footer nav groups: Get Started, Build, Scale, Secure…]
+
+   The h1 → h3 jump (skipping h2) followed by h2s appearing after the h3
+   block means an agent building a page outline via heading traversal will
+   produce a structurally incoherent document model. The h3s appear to be
+   used for the hero tab-panel labels (styled large), while the h2s handle
+   the subsequent content sections — a visual-first heading decision.
+
+   Landmark Regions                                                7 / 9
+   ─────────────────────────────────────────────────────────────────────
+   ✓  <nav aria-label="Main">     — primary navigation, properly labeled
+   ✓  <nav aria-label="Vercel Directory"> — footer navigation, labeled
+   ✓  <main>                      — present
+   ✗  No <footer role="contentinfo"> — footer content lives inside the
+        second <nav>, not a separate footer landmark
+   ✗  No <aside> (not required for this layout)
+
+   Having both navigation regions uniquely labeled is best-in-class.
+   Agents can distinguish primary nav from footer nav without guessing.
+
+   ARIA Label Quality                                              6 / 8
+   ─────────────────────────────────────────────────────────────────────
+   103 of 108 interactive elements are labeled (95.4% coverage).
+   5 unlabeled links found in the hero section, likely company/partner
+   logo links rendered as images:
+     @e18, @e19, @e20, @e21, @e22  — link [no accessible name]
+   These appear after the "Deploy AI Apps in seconds" CTA (e17), suggesting
+   they are integration logos (e.g. framework or AI provider partner icons)
+   with no alt text on the containing anchors.
+   All buttons (8), tabs (8), radio buttons (3), and named links are
+   fully labeled. ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+4. INTERACTIVE ELEMENT COVERAGE                                   20 / 20 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌──────────────────┬───────┬─────────┬───────────────┐
+   │ Element Type     │ Total │ Labeled │ Coverage      │
+   ├──────────────────┼───────┼─────────┼───────────────┤
+   │ Buttons          │    8  │    8    │   100.0%      │
+   │ Links            │   89  │   84    │    94.4%      │
+   │ Tabs             │    8  │    8    │   100.0%      │
+   │ Radio buttons    │    3  │    3    │   100.0%      │
+   ├──────────────────┼───────┼─────────┼───────────────┤
+   │ TOTAL            │  108  │  103    │    95.4%      │
+   └──────────────────┴───────┴─────────┴───────────────┘
+
+   Coverage score    →  15 / 15  (95.4% = Band A, 95–100%)
+   Ref reachability  →  5 / 5    (all refs resolved correctly across
+                                   multiple pages throughout the audit)
+
+   No ambiguous refs. No stale refs after navigation. Tab panels, code copy
+   buttons, and theme switcher radios all reachable and functional by ref.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+5. AGENT NAVIGATION JOURNEY LOG                                   15 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Step 1 — Land + Orient
+     Action  : Read h1 and nav landmark
+     Result  : ✓ SUCCESS  h1 = "Build and deploy on the AI Cloud."
+               Primary nav (aria-label="Main") exposes: Products,
+               Resources, Solutions, Enterprise, Pricing, Log In,
+               Ask AI, Sign Up
+     Score   : 3 / 3
+
+   Step 2 — Navigate to Primary Content
+     Ref used: e5  (link "Enterprise")
+     Action  : click e5 → wait networkidle → read h1
+     Result  : ✓ SUCCESS  Navigated to /enterprise
+               New h1 = "The complete platform to build the web."
+               Clean navigation, no errors.
+     Score   : 3 / 3
+
+   Step 3 — Primary CTA Interaction
+     Ref used: e10  (link "Start Deploying")
+     Action  : click e10 → wait networkidle → check URL
+     Result  : ✓ SUCCESS  Navigated to /new (project creation flow)
+               Page loaded a Git Repository URL input and template
+               browsing section — fully agent-actionable.
+     Score   : 3 / 3
+
+   Step 4 — Form Interaction
+     Refs used: e5 on /new page (textbox "Git Repository URL")
+     Action  : fill e5 "https://github.com/vercel/next.js" → verify
+     Result  : ✓ SUCCESS  Input accepted value. Verified via DOM:
+               "https://github.com/vercel/next.js"
+               No JS interference, no debounce blocking.
+     Score   : 3 / 3
+
+   Step 5 — Return to Homepage
+     Action  : back() → wait networkidle
+     Result  : ✓ SUCCESS  back() returned directly to
+               https://vercel.com/home in one step.
+               History stack navigated cleanly.
+     Score   : 3 / 3
+
+   PERFECT JOURNEY — all 5 steps completed without error or workaround.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+6. STRUCTURED DATA FINDINGS                                       14 / 15 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   JSON-LD Schemas Found                                           7 / 8
+   ─────────────────────────────────────────────────────────────────────
+   One schema block: Organization — richly populated.
+
+     @type          : Organization ✓
+     name           : "Vercel Inc." ✓
+     legalName      : "Vercel Inc." ✓
+     url            : https://vercel.com/ ✓
+     logo           : ImageObject with CDN URL ✓
+     foundingDate   : "2015-11-04" ✓
+     founder        : Person → Guillermo Rauch + sameAs X profile ✓
+     description    : "Vercel provides the developer tools and cloud
+                       infrastructure to build, scale, and secure a
+                       faster, more personalized web." ✓
+     sameAs         : 9 entries (Facebook, X, LinkedIn, GitHub,
+                       Wikipedia, YouTube, npm, Bluesky, Reddit) ✓
+     contactPoint   : Customer Support URL ✓
+
+   This is a model Organization schema. One point docked: no WebSite
+   schema (missing SearchAction / sitelinks potential) and no
+   SoftwareApplication or Product schemas for the platform itself.
+
+   Open Graph Tags                                                 4 / 4
+   ─────────────────────────────────────────────────────────────────────
+   og:title       : "Vercel: Build and deploy the best web experiences
+                     with the AI Cloud – Vercel"
+   og:description : "Vercel gives developers the frameworks, workflows,
+                     and infrastructure to build a faster, more
+                     personalized web."
+   og:image       : Vercel CDN (1200×628 — correct ratio) ✓
+   og:type        : "website" ✓
+   og:url         : https://vercel.com/home ✓
+   og:site_name   : "Vercel" ✓
+   og:locale      : "en_US" ✓
+   All four core tags present plus extras. ✓
+
+   Meta Description                                                3 / 3
+   ─────────────────────────────────────────────────────────────────────
+   "Vercel gives developers the frameworks, workflows, and infrastructure
+    to build a faster, more personalized web."
+   Length: ~96 characters — within ideal 50–160 range. ✓
+
+   Twitter Cards
+   ─────────────────────────────────────────────────────────────────────
+   twitter:card        : "summary_large_image" ✓
+   twitter:title       : present ✓
+   twitter:description : present ✓
+   twitter:image       : 1200×628 CDN URL ✓
+   Full Twitter card — large image format. ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+7. BOT RESISTANCE ASSESSMENT                                      10 / 10 pts
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Page title retrieved  : ✓  "Vercel: Build and deploy the best web
+                               experiences with the AI Cloud"
+   Body text length      : 5,120 characters  /  755 words
+   JS execution          : ✓  All eval() calls reliable across 3 pages
+   CAPTCHA detected      : ✗  None
+   Anti-bot challenge    : ✗  None — ironic given Vercel sells bot
+                               protection products
+   Lazy-load elements    : 8  (minimal; no content was blocked by them)
+   Verdict               : Fully accessible headlessly
+
+   Note: `find text "captcha"` did locate a nav link with text "Invisible
+   CAPTCHA" — this is a MENU ITEM advertising Vercel's own Invisible CAPTCHA
+   product (under Bot Management). There is no actual CAPTCHA challenge on
+   the page. This was a false positive; no human verification was required.
+
+   Score breakdown:
+     Content availability  →  5 / 5  (full content, 755 words, 8 lazy
+                                       elements didn't block agent)
+     CAPTCHA / anti-bot    →  3 / 3  (no challenge encountered)
+     JS execution          →  2 / 2  (reliable throughout)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+8. TOP 3 CRITICAL ISSUES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ① No /agents.md (8 pts left on the table)
+     Vercel already ships /llms.txt — the institutional awareness is there.
+     /agents.md is the natural companion: while llms.txt says "here is our
+     content," agents.md says "here is how to interact with us." For a
+     company actively building AI infrastructure (AI Gateway, Vercel Agent,
+     Fluid Compute), shipping an agents.md is a credibility signal to the
+     agent operator community. It is a public/ directory commit away.
+
+   ② h1 → h3 skip followed by h2 (visual-first heading structure)
+     The hero uses h3 for the tab-section labels ("Your product, delivered.",
+     "Agents", "AI Apps", etc.) while subsequent page sections use h2. This
+     means the semantic outline reads as: one h1 → six h3s → eight h2s.
+     An agent using heading traversal to summarise the page will treat the
+     h3 content (tab labels) as grandchild nodes and the h2 content (main
+     sections) as child nodes — the opposite of their visual importance.
+     Fix: promote the section-label h3 to h2, and use a styled <p> or
+     <span> for the decorative tab-group title.
+
+   ③ 5 unlabeled integration/partner logo links in the hero
+     @e18–@e22 are anchor elements wrapping images in the hero section with
+     no alt text or aria-label. An agent trying to understand "what
+     integrations does Vercel support?" by reading links will find these
+     blank. Adding aria-label="[Provider] integration" or alt text to the
+     wrapped images takes minutes and closes the gap.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+9. RECOMMENDATIONS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   QUICK WINS  (implement in < 1 week)
+   ──────────────────────────────────────────────────────────────────
+
+   • Add /agents.md to public/
+     Content should include: permitted agent interactions (API discovery,
+     deployment status checks, template browsing), rate limit pointers,
+     preferred entry points for agent use cases, and a link to the
+     Vercel Agent product for agent operators. Given Vercel's position in
+     the AI infra market, this file would likely become a reference
+     implementation for the ecosystem. +8 pts; Grade B → A.
+
+   • Add aria-label to the 5 hero logo/integration links (e18–e22)
+     Identify the companies/frameworks displayed and add aria-label or
+     descriptive alt text to the image inside each anchor. One PR, zero
+     design impact. +partial ARIA score.
+
+   • Explicitly allow AI bots in robots.txt
+     Adding named entries (GPTBot, ClaudeBot, CCBot, anthropic-ai) with
+     `Allow: /` is a low-cost, high-signal change. Moves robots.txt score
+     from 2/3 to 3/3.
+
+   STRATEGIC  (architectural / design system level)
+   ──────────────────────────────────────────────────────────────────
+
+   • Fix the heading hierarchy in the hero tab-group section
+     Promote the tab-group label to h2 and use h3 for the individual tab
+     panel headings. This aligns the semantic outline with the visual
+     hierarchy (hero section is the most prominent content, not a
+     grandchild node). Requires coordinated change across the marketing
+     site design system.
+
+   • Add a <footer> landmark (role="contentinfo")
+     The "Vercel Directory" navigation is semantically the footer but is
+     wrapped in a <nav> rather than a <footer>. Best practice is a <footer>
+     or <div role="contentinfo"> wrapping the entire footer area, with the
+     nav inside it. This correctly separates navigation from contentinfo.
+
+   • Add a WebSite schema with SearchAction
+     The Organization schema is excellent. Adding a WebSite schema with
+     a potentialAction of SearchAction (pointing to vercel.com/search or
+     docs search) enables agents and Google to surface Vercel's sitelinks
+     search box and gives LLMs a structured "how to search this site" signal.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+10. CLOSING NOTES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   • Audit covered /home and /enterprise. The /new (project creation)
+     page was visited as part of the CTA journey and found to be
+     excellently structured for agent interaction (labeled inputs, clear
+     template links). Internal dashboard pages (behind auth) were not
+     in scope.
+
+   • Vercel's deployment on their own platform means the site represents
+     their own product quality signal. The /llms.txt presence confirms
+     Vercel is tracking the agent-readiness space. /agents.md is the
+     obvious next step and would be noticed by the developer community.
+
+   • The "Invisible CAPTCHA" false positive during bot resistance scanning
+     is worth flagging as a quirk of the text-match approach. Vercel's own
+     products are named using terms that overlap with bot-resistance
+     terminology. Future audit tooling should exclude nav text from
+     CAPTCHA detection heuristics.
+
+   • robots.txt uses `User-Agent: *` only — there are no AI-specific
+     Allow/Disallow blocks. Adding named AI bot entries would also signal
+     that Vercel is actively maintaining its AI crawl policy, consistent
+     with their platform positioning.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   SCORE SUMMARY
+   ┌──────────────────────────────────┬─────────┬────────────┐
+   │ Dimension                        │ Max Pts │ Score      │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ Proactive AI Readiness           │   15    │    6       │
+   │ Accessibility Tree Quality       │   25    │   17       │
+   │ Interactive Element Coverage     │   20    │   20       │
+   │ Structured Data / Schema         │   15    │   14       │
+   │ Agent Navigation Fluency         │   15    │   15       │
+   │ Bot Resistance / Reliability     │   10    │   10       │
+   ├──────────────────────────────────┼─────────┼────────────┤
+   │ TOTAL                            │  100    │   82       │
+   │ GRADE                            │         │    B       │
+   └──────────────────────────────────┴─────────┴────────────┘
+
+   Grade B (75–89): Good. Agents navigate effectively. One commit
+   (/agents.md in public/) and a heading fix would push this to Grade A.
+
+════════════════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+   agent-browser v0.15.1 · Session: vercel
+════════════════════════════════════════════════════════════════════════════
