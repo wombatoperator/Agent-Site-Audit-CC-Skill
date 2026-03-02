@@ -1,0 +1,296 @@
+╔══════════════════════════════════════════════════════════════════════════╗
+║        AGENTIC ADVERTISING SITE AUDIT — COHORT REPORT                   ║
+║        Adtech & Digital Advertising Industry                             ║
+║        Date   : 2026-03-01                                               ║
+║        Tool   : agent-browser v0.15.1                                    ║
+║        Audits : 20 domains                                               ║
+╚══════════════════════════════════════════════════════════════════════════╝
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+1. PURPOSE & METHODOLOGY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   This report summarizes an audit of 20 domains across the adtech and
+   digital advertising ecosystem, evaluating how well each site supports
+   interaction by AI agents — automated systems that browse, read, fill
+   forms, and extract information on behalf of users.
+
+   Each domain was audited headlessly using agent-browser v0.15.1, which
+   exposes the browser's accessibility tree (the same structure used by
+   screen readers and automation tools). No visual rendering was used.
+
+   Scoring dimensions (100 pts total):
+   ┌───────────────────────────────────────┬─────────┐
+   │ Dimension                             │ Max Pts │
+   ├───────────────────────────────────────┼─────────┤
+   │ LLM / AI Readiness (llms.txt, bots)  │  15     │
+   │ Accessibility Tree Quality            │  25     │
+   │ Interactive Element Coverage          │  20     │
+   │ Structured Data / Schema              │  15     │
+   │ Agent Navigation Fluency              │  15     │
+   │ Bot Resistance / Reliability          │  10     │
+   └───────────────────────────────────────┴─────────┘
+
+   Grade scale:
+   A (90-100) · B (75-89) · C (55-74) · D (35-54) · F (0-34)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+2. FULL COHORT RESULTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   ┌─────────────────────────┬───────┬───────┬───────────┬────────────────┐
+   │ Domain                  │ Grade │ Score │ llms.txt  │ Category       │
+   ├─────────────────────────┼───────┼───────┼───────────┼────────────────┤
+   │ magnite.com             │  B    │ 86    │ FOUND ✓   │ SSP            │
+   │ openx.com               │  B    │ 85    │ FOUND ✓   │ SSP            │
+   │ vercel.com              │  B    │ 82    │ FOUND ✓   │ Infrastructure │
+   │ comscore.com            │  B    │ 77    │ —         │ Measurement    │
+   │ iabtechlab.com          │  B    │ 77    │ —         │ Standards Body │
+   │ thetradedesk.com        │  C    │ 73    │ —         │ DSP            │
+   │ indexexchange.com       │  C    │ 73    │ —         │ SSP            │
+   │ freewheel.com           │  C    │ 72    │ —         │ Ad Server      │
+   │ advertising.amazon.com  │  C    │ 71    │ —         │ DSP/Retail     │
+   │ stackadapt.com          │  C    │ 69    │ —         │ DSP            │
+   │ golivehq.co             │  C    │ 67    │ —         │ AdOps Platform │
+   │ iab.com                 │  C    │ 67    │ FOUND ✓*  │ Standards Body │
+   │ integralads.com         │  C    │ 67    │ —         │ Verification   │
+   │ criteo.com              │  C    │ 67    │ —         │ DSP/Retarget   │
+   │ videoamp.com            │  C    │ 65    │ —         │ Measurement    │
+   │ doubleverify.com        │  C    │ 65    │ —         │ Verification   │
+   │ humansecurity.com       │  F    │  3    │ —         │ Fraud/Bot Sec  │
+   ├─────────────────────────┼───────┼───────┼───────────┼────────────────┤
+   │ advertising.roku.com    │  F    │ 11    │ —         │ INVALID †      │
+   │ quantcast.com           │  F    │  2    │ —         │ INVALID †      │
+   │ lotame.com              │  F    │  6    │ —         │ INVALID †      │
+   └─────────────────────────┴───────┴───────┴───────────┴────────────────┘
+
+   * iab.com has llms.txt but actively blocks AI crawlers (ClaudeBot,
+     GPTBot, etc.) in robots.txt — file present but inaccessible.
+   † These three domains did not resolve to a stable, auditable homepage.
+     advertising.roku.com served rotating CDN content from unrelated adtech
+     companies. quantcast.com and lotame.com performed immediate JavaScript
+     redirects to rotating third-party sites. Scores reflect infrastructure
+     failure, not content quality.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+3. llms.txt ADOPTION — THE KEY FINDING
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   llms.txt is a proposed web standard (analogous to robots.txt) that
+   gives LLMs and AI agents a structured index of a site's content —
+   what to read, what sections exist, and how to navigate the site.
+
+   Of 17 stable, auditable domains:
+
+   FOUND (4 domains):
+   ┌──────────────────┬──────────────────────────────────────────────────┐
+   │ Domain           │ Details                                          │
+   ├──────────────────┼──────────────────────────────────────────────────┤
+   │ magnite.com      │ Generated by Yoast SEO v26.8. Sections: Pages,  │
+   │                  │ Posts, Awards, Resources, Team Members, Glossary │
+   │                  │ Terms, Tags, Publisher taxonomy, Sitemap index.  │
+   │                  │ Well-structured, spec-compliant.                 │
+   ├──────────────────┼──────────────────────────────────────────────────┤
+   │ openx.com        │ Generated by Yoast SEO v27.0 (latest in cohort).│
+   │                  │ Sections: Pages, Case Studies, Curated Packages, │
+   │                  │ Events, News, Press Releases, Thought Leadership, │
+   │                  │ Categories, Tags, Sitemap. Most comprehensive    │
+   │                  │ auto-generated file in the audit.                │
+   ├──────────────────┼──────────────────────────────────────────────────┤
+   │ vercel.com       │ Comprehensive, spec-compliant, natively authored.│
+   │                  │ Not a Yoast-generated file — hand-crafted or     │
+   │                  │ framework-generated for a developer audience.    │
+   ├──────────────────┼──────────────────────────────────────────────────┤
+   │ iab.com          │ Present (31KB, comprehensive). However robots.txt│
+   │                  │ blocks ClaudeBot, GPTBot, and all major AI       │
+   │                  │ crawlers via Disallow — rendering the file       │
+   │                  │ inaccessible to the bots it is designed to serve.│
+   └──────────────────┴──────────────────────────────────────────────────┘
+
+   NOT FOUND (13 domains):
+   advertising.amazon.com, comscore.com, criteo.com, doubleverify.com,
+   freewheel.com, golivehq.co, humansecurity.com, iabtechlab.com,
+   indexexchange.com, integralads.com, stackadapt.com, thetradedesk.com,
+   videoamp.com.
+
+   ADOPTION RATE: 3 of 17 (18%) have a functional, accessible llms.txt.
+   iab.com is counted separately due to the robots.txt contradiction.
+
+   KEY INSIGHT — The Yoast SEO Path:
+   Magnite (v26.8) and OpenX (v27.0) both use Yoast SEO, which auto-
+   generates llms.txt as of v26.8. Several other domains in this cohort
+   (indexexchange.com, integralads.com, videoamp.com) already run on
+   WordPress + Yoast. A single plugin upgrade delivers llms.txt with zero
+   custom development. This is the fastest path to LLM readiness for
+   WordPress-based adtech sites.
+
+   NOTABLE IRONY — StackAdapt & IAB Tech Lab:
+   StackAdapt markets itself as "The AI-Powered Marketing Platform" and
+   even has a product called "Ivy™ AI Marketing Assistant" — yet ships no
+   llms.txt. IAB Tech Lab is the standards body defining agentic advertising
+   protocols and publishes specifications for AI agents — yet has no
+   llms.txt and their robots.txt blocks all major AI crawlers.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+4. GRADE DISTRIBUTION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   (Excluding the 3 invalid/redirect domains)
+
+   A (90-100)  ████░░░░░░░░░░░░░░░░  0 domains  (0%)
+   B (75-89)   ████████████░░░░░░░░  5 domains  (29%)
+   C (55-74)   ████████████████████  11 domains (65%)
+   D (35-54)   ░░░░░░░░░░░░░░░░░░░░  0 domains  (0%)
+   F (0-34)    ████░░░░░░░░░░░░░░░░  1 domain   (6%)
+
+   Average score (valid domains): 67.7 / 100
+   Median score: 67
+   Highest: magnite.com (86)
+   Lowest (valid): humansecurity.com (3) — CAPTCHA blocked by own product
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+5. COHORT-WIDE FINDINGS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   5a. The og:title "Home" Bug (3 domains affected)
+   ─────────────────────────────────────────────────
+   magnite.com, integralads.com, and openx.com all have og:title set to
+   "Home" on their homepage — a WordPress/Yoast CMS misconfiguration where
+   the page title override isn't applied in the Open Graph settings. When
+   shared socially or summarized by AI, these pages present as "Home"
+   with no brand or page context. Fix: set the SEO title in Yoast's
+   homepage settings panel.
+
+   5b. Structured Data Coverage — Strong on Schema, Weak on Freshness
+   ──────────────────────────────────────────────────────────────────
+   Most WordPress/Yoast sites auto-generate a solid JSON-LD @graph with
+   WebPage, WebSite, Organization, and BreadcrumbList. Quality issues:
+   • openx.com: dateModified stuck at 2023-06-15 (3 years stale)
+   • integralads.com: WebSite description = "The Hidden Cost of MFA
+     Webinar" (a campaign title leaked into the brand description field)
+   • integralads.com: deprecated plus.google.com sameAs (Google+ shut
+     down 2019) still referenced
+   • indexexchange.com: Organization logo URL is an empty string
+   • advertising.amazon.com: zero JSON-LD — no schema at all
+   • doubleverify.com: zero JSON-LD — no schema at all
+   • thetradedesk.com: zero JSON-LD — no schema at all
+
+   5c. Navigation Link Quality — Best and Worst in Cohort
+   ──────────────────────────────────────────────────────
+   BEST: openx.com — content cards carry full multi-sentence descriptions
+   in link text. Agents understand product value propositions without
+   clicking. This is the accessibility pattern every site should adopt.
+
+   WORST: videoamp.com — 37+ undifferentiated generic links ("Read More"
+   ×7, "View all Press" ×7, "Read testimonial" ×7, "Read more" ×6).
+   Agents cannot distinguish between any content cards in the body.
+
+   5d. The standout: StackAdapt's Demo Form
+   ─────────────────────────────────────────
+   stackadapt.com has the most complete lead-generation form in the entire
+   audit cohort — 9 fully labeled fields (First Name, Last Name, Business
+   Email, Phone, Company, Job Title, Company Country, Annual Budget, Work
+   Type). Every field has an accessible name. This is best-in-class form
+   accessibility for agent-driven lead capture.
+
+   5e. The standout: HUMAN Security's Self-Block
+   ──────────────────────────────────────────────
+   humansecurity.com is blocked by their own BotGuard product — a "Press &
+   Hold to confirm you are a human" challenge that headless browsers cannot
+   pass. The company that sells bot protection has protected their own site
+   from AI agent access. Score: 3/100. This is a notable finding for any
+   company considering deploying aggressive bot mitigation.
+
+   5f. The standout: VideoAmp's VideoObject Schema
+   ────────────────────────────────────────────────
+   videoamp.com is the only site in the cohort to include a VideoObject
+   JSON-LD block with a complete transcript — a 500+ word script of their
+   homepage sizzle video including a Morgan Freeman voice impersonation
+   disclaimer. Rich media schema with transcripts significantly improves
+   LLM comprehension of multimedia content.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+6. TOP RECOMMENDATIONS FOR THE INDUSTRY
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   QUICK WINS (< 1 week, applicable to most sites in this cohort):
+
+   1. Upgrade Yoast SEO to v26.8+ — auto-generates /llms.txt immediately.
+      Applicable to: indexexchange.com, integralads.com, videoamp.com,
+      iabtechlab.com, and any other WordPress/Yoast site in the cohort.
+
+   2. Fix og:title "Home" — in Yoast homepage SEO title settings.
+      Applicable to: magnite.com, integralads.com, openx.com.
+
+   3. Add Organization JSON-LD schema — at minimum: name, url, logo, sameAs.
+      Applicable to: advertising.amazon.com, doubleverify.com,
+      thetradedesk.com, stackadapt.com (no Organization schema).
+
+   4. Add aria-labels to social footer icon links.
+      Applicable to: virtually every site in the cohort uses icon-only
+      social links with no platform name in the accessible label.
+
+   STRATEGIC (1–3 months):
+
+   5. Adopt OpenX's content card labeling pattern — full description text
+      in link aria-labels rather than "Read More". This single change
+      dramatically improves both accessibility and agent navigation.
+
+   6. Add explicit AI-bot entries to robots.txt — even if the policy is
+      "allow all", explicitly naming GPTBot, ClaudeBot, and PerplexityBot
+      with Allow: / signals intentional openness to AI indexing.
+
+   7. Add /agents.md (an emerging convention, seen in vercel.com's audit)
+      to describe what agents are permitted to do on the site — forms they
+      can fill, APIs they can call, content they can summarize.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+7. INDIVIDUAL REPORT REFERENCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   Full per-domain reports are in ./audit-reports/:
+
+   advertising.amazon.com-2026-03-01.txt   (C / 71)
+   advertising.roku.com-2026-03-01.txt     (F / 11) †
+   comscore.com-2026-03-01.txt             (B / 77)
+   criteo.com-2026-03-01.txt               (C / 67)
+   doubleverify.com-2026-03-01.txt         (C / 65)
+   freewheel.com-2026-03-01.txt            (C / 72)
+   golivehq.co-2026-03-01.txt             (C / 67)
+   humansecurity.com-2026-03-01.txt        (F /  3)
+   iab.com-2026-03-01.txt                  (C / 67)
+   iabtechlab.com-2026-03-01.txt           (B / 77)
+   indexexchange.com-2026-03-01.txt        (C / 73)
+   integralads.com-2026-03-01.txt          (C / 67)
+   lotame.com-2026-03-01.txt              (F /  6) †
+   magnite.com-2026-03-01.txt              (B / 86) ★ llms.txt
+   openx.com-2026-03-01.txt               (B / 85) ★ llms.txt
+   quantcast.com-2026-03-01.txt            (F /  2) †
+   stackadapt.com-2026-03-01.txt           (C / 69)
+   thetradedesk.com-2026-03-01.txt         (C / 73)
+   vercel.com-2026-03-01.txt              (B / 82) ★ llms.txt
+   videoamp.com-2026-03-01.txt             (C / 65)
+
+   † Invalid/redirect domain — score reflects infrastructure failure.
+   ★ llms.txt present and accessible.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+8. CLOSING STATEMENT
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+   The adtech industry is building AI-powered products at speed while
+   leaving its own front doors largely closed to AI agents. Only 3 of 17
+   auditable sites (18%) have a functional llms.txt. No site in the cohort
+   earned an A grade. The average score of 67.7 puts the industry squarely
+   in "functional but agents will struggle" territory.
+
+   The path to improvement is clear and, for most sites, inexpensive:
+   a Yoast plugin upgrade, a few schema fixes, and deliberate link labeling
+   would move the median score above 80. The companies that make these
+   investments first will have a measurable advantage as AI agents become
+   primary buyers, researchers, and customers in the advertising ecosystem.
+
+════════════════════════════════════════════════════════════════════════════
+   Cohort report generated by Claude Code · agent-browser-audit skill
+   Individual reports: ./audit-reports/<domain>-2026-03-01.txt
+════════════════════════════════════════════════════════════════════════════

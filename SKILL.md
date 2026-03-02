@@ -49,6 +49,7 @@ Complete all 9 steps below in order. Do not skip steps. Record all findings as y
 Use `npx agent-browser --session-name <domain> eval` to fetch each file from the site origin and record: **found / not found** plus a brief content summary if found.
 
 ```bash
+# llms.txt — LLM-ready content manifest
 npx agent-browser --session-name <domain> eval "fetch('/llms.txt').then(r=>r.ok?r.text():Promise.reject(r.status)).catch(e=>'NOT FOUND: '+e)"
 
 
@@ -59,16 +60,19 @@ For `robots.txt`, scan the content for these user-agents and their allow/disallo
 
 Record per file:
 - **llms.txt**: found/not-found, list of content sections declared, whether it follows the llms.txt spec
+- **robots.txt**: found/not-found, which AI bots are explicitly allowed vs disallowed vs not mentioned
 
 ---
+
+## Step 3 — Full Accessibility Tree Snapshot
 
 Capture and analyze the accessibility tree:
 
 ```bash
-
+# Full tree
 npx agent-browser --session-name <domain> snapshot
 
-
+# Interactive + compact view (use refs from this for all subsequent steps)
 npx agent-browser --session-name <domain> snapshot -i -c
 ```
 
@@ -86,8 +90,10 @@ Analyze and record:
 Using the refs from the `-i -c` snapshot in Step 3:
 
 ```bash
+# Catalog all buttons
 npx agent-browser --session-name <domain> find role button text
 
+# Catalog all links
 npx agent-browser --session-name <domain> find role link text
 ```
 
@@ -104,12 +110,16 @@ Compute: **Interactive Element Coverage %** = (labeled / total) × 100
 ## Step 5 — Structured Data Check
 
 ```bash
+# JSON-LD schema blocks
 npx agent-browser --session-name <domain> eval "JSON.stringify([...document.querySelectorAll('script[type=\"application/ld+json\"]')].map(s=>{try{return JSON.parse(s.textContent)}catch(e){return 'PARSE_ERROR'}}),null,2)"
 
+# Open Graph tags
 npx agent-browser --session-name <domain> eval "JSON.stringify(Object.fromEntries([...document.querySelectorAll('meta[property^=\"og:\"]')].map(m=>[m.getAttribute('property'),m.content])),null,2)"
 
+# Meta description
 npx agent-browser --session-name <domain> eval "document.querySelector('meta[name=\"description\"]')?.content ?? 'NOT FOUND'"
 
+# Twitter/X card tags
 npx agent-browser --session-name <domain> eval "JSON.stringify(Object.fromEntries([...document.querySelectorAll('meta[name^=\"twitter:\"]')].map(m=>[m.getAttribute('name'),m.content])),null,2)"
 ```
 
@@ -163,16 +173,21 @@ Record for each step: what was attempted, ref used, outcome, any error messages 
 ## Step 7 — Bot Resistance Check
 
 ```bash
+# Verify JS executed and page title is present
 npx agent-browser --session-name <domain> eval "document.title"
 
+# Check content volume (blank/thin pages score poorly)
 npx agent-browser --session-name <domain> eval "document.body.innerText.trim().length"
 
+# Check visible text word count
 npx agent-browser --session-name <domain> eval "document.body.innerText.trim().split(/\s+/).length"
 
+# Scan for CAPTCHA indicators
 npx agent-browser --session-name <domain> find text "captcha"
 npx agent-browser --session-name <domain> find text "verify you are human"
 npx agent-browser --session-name <domain> find text "are you a robot"
 
+# Check for lazy-load barriers (content behind scroll triggers)
 npx agent-browser --session-name <domain> eval "document.querySelectorAll('[data-lazy],[loading=\"lazy\"]').length"
 ```
 
