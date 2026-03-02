@@ -1,0 +1,110 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : doubleverify.com                                   ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 65/100
+   DoubleVerify demonstrates strong accessibility investment — screen-reader mode,
+   multiple skip links, and descriptive social/badge link labels. However, the site
+   is missing all JSON-LD schema markup, has no llms.txt, and the h1 element
+   returns no accessible text in headless context. Six unlabeled-context "Learn more"
+   links impair agent navigation. OG tags are partial.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest            │
+   │ /robots.txt     │ FOUND     │ Only HubSpot preview paths blocked. No   │
+   │                 │           │ GPTBot, ClaudeBot, CCBot, anthropic-ai   │
+   │                 │           │ entries. AI bots: allowed by default.    │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [18/25 pts]
+   Heading hierarchy  : h1 element present in DOM but returns null innerText in
+                        headless context — likely CSS-rendered or visually
+                        hidden. Functional heading structure may be incomplete.
+   Landmark regions   : Strong skip-link implementation (Skip to Content, Menu,
+                        Footer). Accessibility screen-reader mode button present.
+                        Menuitem tree well-labeled.
+   ARIA label quality : Social links use full descriptive labels ("Follow us on
+                        LinkedIn"). Certification badge links labeled ("iab badge",
+                        "aicpa soc badge" etc. — functional but not descriptive
+                        of link destination).
+   Total tree nodes   : 80 interactive refs
+
+4. INTERACTIVE ELEMENT COVERAGE                        [17/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     6 │       6 │ 100%      │
+   │ Links        │    68 │      68 │ 100%      │
+   │ Textbox      │     1 │       1 │ 100%      │
+   │ Menuitems    │    27 │      27 │ 100%      │
+   └──────────────┴───────┴─────────┴───────────┘
+   Deduction: 6 "Learn more" links (e19-e24) share identical labels —
+   agents cannot distinguish between destination pages without visual context.
+
+5. AGENT NAVIGATION JOURNEY LOG                        [11/15 pts]
+   Step 1 — Land + Orient      : PARTIAL. Page title accessible ("DoubleVerify:
+                                 Driving Superior Outcomes...") but h1 text not
+                                 readable in headless — agents lose primary
+                                 orientation anchor.
+   Step 2 — Navigate Content   : SUCCESS. Nav links (Products, Solutions,
+                                 Channels, Resources, Company) all labeled.
+   Step 3 — CTA Interaction    : SUCCESS. "Get Started with DoubleVerify" [e15]
+                                 and "Get Started" [e30] clearly labeled.
+   Step 4 — Form Interaction   : SUCCESS. Email subscription textbox [e31]
+                                 labeled "Email*" — functional for agents.
+   Step 5 — Return to Home     : SUCCESS. Logo link [e7] "DoubleVerify logo".
+
+6. STRUCTURED DATA FINDINGS                            [6/15 pts]
+   JSON-LD schemas : NONE — no schema.org markup present
+   OG tags         : PARTIAL — og:title, og:description, og:image (with
+                     dimensions), og:url present. Missing: og:type, og:site_name.
+   Meta description: PRESENT — "DV is the leading media effectiveness platform
+                     that leverages AI to drive superior outcomes for global brands."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [8/10 pts]
+   Page title retrieved : YES — "DoubleVerify: Driving Superior Outcomes For
+                          Global Brands"
+   Body text length     : 1,204 words (strong content volume)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Cookie consent + opt-out buttons present (non-blocking)
+   Verdict              : Fully accessible headlessly — networkidle timeout
+                          (continuous background activity) but content accessible.
+
+8. TOP 3 CRITICAL ISSUES
+   ① No JSON-LD schema — DoubleVerify is an enterprise ad-tech company with
+     complex products. Agents cannot extract entity relationships without schema.
+   ② h1 not readable in headless context — the primary page heading cannot be
+     parsed by agents, undermining orientation at page load.
+   ③ Six undifferentiated "Learn more" links — agents navigating the homepage
+     cannot determine which "Learn more" leads to which product section.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Fix h1 to use visible, non-CSS-dependent text so headless agents can read it.
+   • Add aria-label to each "Learn more" link with its section context (e.g.,
+     "Learn more about DV Media AdVantage Platform").
+
+   STRATEGIC (longer-term improvements):
+   • Add Organization + Product JSON-LD schemas. DV's product suite (MAP,
+     Marketplace Suite, Publisher Suite) maps cleanly to Product schema types.
+   • Add /llms.txt — DV's Knowledge Hub and Global Insights content is high-value
+     for LLM indexing.
+
+10. CLOSING NOTES
+    Audit conducted on the homepage. The site uses HubSpot CMS (evident from
+    robots.txt). networkidle timeout indicates continuous analytics/tracker
+    activity but did not block content access. The screen-reader accessibility
+    widget (powered by third-party tool) adds ARIA utility but also introduces
+    redundant skip-link duplication.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

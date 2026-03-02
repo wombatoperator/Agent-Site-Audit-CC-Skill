@@ -1,0 +1,109 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : humansecurity.com                                  ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: F  |  Score: 3/100
+   HUMAN Security's homepage is completely inaccessible to AI agents.
+   The site presents a "Press & Hold" interactive CAPTCHA challenge that blocks
+   all headless browser access before any content is served. Audit steps 3–9
+   cannot be completed — only the challenge page is accessible. The irony is
+   notable: a bot-security company deploys its own product against audit tools,
+   effectively rendering itself F-rated for AI agent accessibility. The only
+   positive signal is a permissive robots.txt.
+
+   ⚠ NOTE: This is simultaneously a worst-case accessibility result and a
+   demonstration of HUMAN Security's product working as intended. The grade
+   reflects agent-accessibility, not the quality of the product itself.
+
+2. LLM / AI READINESS                                  [3/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ BLOCKED   │ 403 Forbidden — server recognizes path   │
+   │                 │           │ but denies access. Not a standard 404.   │
+   │ /robots.txt     │ FOUND     │ "User-Agent: * / Disallow: [empty]" —   │
+   │                 │           │ fully permissive. Contradicts the        │
+   │                 │           │ runtime CAPTCHA enforcement.             │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [0/25 pts]
+   BLOCKED — Challenge page body only:
+   "Before we continue...
+    Press & Hold to confirm you are a human (and not a bot).
+    Reference ID: ba96f455-15ff-11f1-9b64-487756b1c68b"
+
+   No heading hierarchy, landmarks, or ARIA labels assessable.
+   The challenge page itself has no accessible tree structure beyond plain text.
+
+4. INTERACTIVE ELEMENT COVERAGE                        [0/20 pts]
+   BLOCKED — Only the "Press & Hold" challenge button is reachable.
+   Agents cannot interact with challenge (requires sustained pointer press).
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Challenge    │     1 │       1 │ N/A       │
+   │ All content  │     0 │       0 │ BLOCKED   │
+   └──────────────┴───────┴─────────┴───────────┘
+
+5. AGENT NAVIGATION JOURNEY LOG                        [0/15 pts]
+   Step 1 — Land + Orient      : BLOCKED. Only challenge page served.
+   Step 2 — Navigate Content   : BLOCKED.
+   Step 3 — CTA Interaction    : BLOCKED.
+   Step 4 — Form Interaction   : BLOCKED.
+   Step 5 — Return to Home     : BLOCKED.
+
+6. STRUCTURED DATA FINDINGS                            [0/15 pts]
+   JSON-LD schemas : BLOCKED — cannot assess
+   OG tags         : BLOCKED — cannot assess
+   Meta description: BLOCKED — cannot assess
+   Twitter cards   : BLOCKED — cannot assess
+
+7. BOT RESISTANCE ASSESSMENT                           [0/10 pts]
+   Page title retrieved : "Access to this page has been denied"
+   Body text length     : 19 words (challenge text only)
+   CAPTCHA detected     : YES — "Press & Hold to confirm you are a human"
+                          Interactive challenge requiring sustained pointer press.
+   Lazy-load barriers   : N/A — content never served.
+   Verdict              : BLOCKED — Completely inaccessible to AI agents.
+                          HUMAN Security's own BotGuard/Sentry product is
+                          deployed on their homepage.
+
+8. TOP 3 CRITICAL ISSUES
+   ① Homepage completely blocks AI agent access — 0 content accessible. Any
+     agent (advertising platform, search crawler, AI assistant) trying to learn
+     about HUMAN Security's products will be denied.
+   ② Contradictory policy — robots.txt invites all crawlers but runtime
+     enforcement blocks them. Mixed signals reduce trust with compliant agents.
+   ③ llms.txt returns 403 (not 404) — the path exists but is actively forbidden.
+     This suggests a deliberate decision to block LLM content access.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Whitelist known good AI agent user-agents at the WAF/BotGuard level
+     (Googlebot, ClaudeBot, GPTBot) to allow content indexing.
+   • Align robots.txt with runtime enforcement — either allow crawlers in both
+     or restrict in both. Current inconsistency is confusing.
+
+   STRATEGIC (longer-term improvements):
+   • Provide a "Crawl-accessible" version or API endpoint for structured content
+     about products, so agents and LLMs can learn about the company's capabilities
+     without triggering the bot challenge.
+   • Reconsider the llms.txt 403 — a company in the security space could use an
+     llms.txt to proactively define what AI agents are permitted to know about
+     their products, rather than simply blocking.
+
+10. CLOSING NOTES
+    This is the only domain in the audit set to return a complete block. The
+    "Press & Hold" challenge (a behavioral biometric CAPTCHA) requires sustained
+    human pointer interaction — impossible for programmatic agents. The audit
+    effectively demonstrates HUMAN Security's product in action. No page content,
+    screenshots from the blocked challenge page only. Reference ID collected for
+    their security logs: ba96f455-15ff-11f1-9b64-487756b1c68b.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

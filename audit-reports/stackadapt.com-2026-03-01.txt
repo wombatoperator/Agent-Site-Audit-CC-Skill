@@ -1,0 +1,131 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : stackadapt.com                                     ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 69/100
+   StackAdapt has the most complete lead-gen form in this audit set — 9 fully
+   labeled fields, making it exceptionally agent-fillable. The skip link, labeled
+   navigation, and 924-word content volume are strong signals. However, critical
+   structured data gaps undermine AI agent comprehension: no Organization schema,
+   empty WebSite description, og:type incorrectly set to "article" instead of
+   "website", and no llms.txt. The robots.txt ASCII art is charming ("TO FEARLESSLY
+   PREVENT THE ROBOT UPRISING") but the actual policy is permissive.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest            │
+   │ /robots.txt     │ FOUND     │ Humorous ASCII art header ("TO FEARLESSLY│
+   │                 │           │ PREVENT THE ROBOT UPRISING"). Actual     │
+   │                 │           │ policy: User-agent: * with no Disallow   │
+   │                 │           │ (fully permissive). No AI-specific bots  │
+   │                 │           │ mentioned. 2 sitemaps declared.          │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [19/25 pts]
+   Heading hierarchy  : h1 "The Leading Technology Company That Connects" —
+                        present and descriptive (marketing but meaningful).
+   Landmark regions   : Skip to content link [e1] present. Navigation uses
+                        radio button + button pattern (unusual but labeled).
+                        "Toggle navigation menu" checkbox [e3] present.
+   ARIA label quality : All 95 elements carry accessible names. Social share
+                        links labeled "Share Icon" ×5 (platform-agnostic but
+                        technically labeled). Radio buttons duplicated (mobile +
+                        desktop instances) with same labels — agents may see
+                        duplicate nav options.
+   Total tree nodes   : 95 interactive refs
+
+4. INTERACTIVE ELEMENT COVERAGE                        [18/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     4 │       4 │ 100%      │
+   │ Links        │    66 │      66 │ 100%      │
+   │ Textboxes    │     6 │       6 │ 100%      │
+   │ Comboboxes   │     3 │       3 │ 100%      │
+   │ Checkboxes   │     2 │       2 │ 100%      │
+   │ Radios       │     8 │       7 │  88%      │
+   └──────────────┴───────┴─────────┴───────────┘
+   1 unlabeled radio (e4 — default unchecked state). Otherwise 100% coverage.
+   Full lead-gen form: First Name, Last Name, Business Email, Phone, Company,
+   Job Title, Company Country, Annual Budget, Work Type — all labeled.
+
+5. AGENT NAVIGATION JOURNEY LOG                        [13/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 readable, nav accessible via
+                                 radio+button pattern (Platform, Solutions,
+                                 About Us, Resources).
+   Step 2 — Navigate Content   : SUCCESS. Footer nav is comprehensive: all
+                                 channels (CTV, DOOH, Email, Audio, Video,
+                                 Native, Display, In-Game), industries, and
+                                 resources labeled.
+   Step 3 — CTA Interaction    : SUCCESS. "Request a Demo" [e18/e21/e28/e36]
+                                 and "Sign Up" [e19/e20/e27/e35] all accessible.
+   Step 4 — Form Interaction   : EXCELLENT. Full demo request form with 9 labeled
+                                 fields — the most agent-friendly form in the
+                                 entire audit set.
+   Step 5 — Return to Home     : SUCCESS. "stackadapt logo" [e2] link present.
+
+6. STRUCTURED DATA FINDINGS                            [7/15 pts]
+   JSON-LD schemas : WebPage (url, name, datePublished 2024-10-15,
+                     dateModified 2026-02-04, description), ImageObject.
+                     WebSite declared but description is EMPTY STRING "".
+                     NO Organization schema — no sameAs, no logo entity,
+                     no founding data, no contact info.
+                     WebPage @id uses non-standard "/homepage" suffix.
+                     ImageObject caption: "cosette_logo" — internal CMS name
+                     leaked into public schema.
+   OG tags         : CRITICAL BUG — og:type is "article" for homepage (should
+                     be "website"). og:title, og:description, og:url, og:site_name,
+                     og:image (1200×630 JPEG), og:locale all present.
+   Meta description: PRESENT — "StackAdapt is the leading AI-powered marketing
+                     platform used by the most exceptional digital marketers.
+                     Experience the difference."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [7/10 pts]
+   Page title retrieved : YES — "StackAdapt: The AI-Powered Marketing Platform"
+   Body text length     : 924 words (good)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : networkidle timeout (continuous activity)
+   Verdict              : Fully accessible headlessly — content loads despite
+                          networkidle timeout.
+
+8. TOP 3 CRITICAL ISSUES
+   ① No Organization JSON-LD schema — StackAdapt has no machine-readable entity
+     declaration. Agents cannot determine founding date, address, or social
+     profiles from structured data.
+   ② og:type is "article" — homepage flagged as an article in OG metadata. This
+     affects how social platforms and AI agents classify the page type.
+   ③ No llms.txt — for an AI-powered marketing platform, the absence of an LLM
+     content manifest is notable. The irony is significant given their product
+     positioning.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Fix og:type from "article" to "website" on the homepage OG configuration.
+   • Add Organization JSON-LD schema — at minimum name, url, logo, and sameAs
+     (LinkedIn, X, etc.).
+   • Fix WebSite description in JSON-LD — currently an empty string.
+
+   STRATEGIC (longer-term improvements):
+   • Add /llms.txt — StackAdapt's Academy, Engineering Blog, and Case Studies
+     would make for excellent LLM-accessible content sections.
+   • Consider Yoast SEO v26.8+ which auto-generates llms.txt — would immediately
+     address both the schema gaps and LLM readiness simultaneously.
+
+10. CLOSING NOTES
+    The robots.txt ASCII art ("TO FEARLESSLY PREVENT THE ROBOT UPRISING") is
+    humorous but the policy is fully permissive. NetworkIdle timeout likely from
+    continuous analytics. The "Ivy™ AI Marketing Assistant" link [e52] indicates
+    StackAdapt has an AI product — the absence of llms.txt for an AI-native
+    company is the most notable gap. The demo form is the most complete lead-gen
+    form observed in this audit cohort. Site is self-described as "AI-Powered."
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

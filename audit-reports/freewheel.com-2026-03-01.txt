@@ -1,0 +1,107 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : freewheel.com                                      ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 72/100
+   FreeWheel's homepage has solid structured data from Yoast WordPress SEO
+   (WebPage, WebSite with SearchAction, BreadcrumbList) and clean nav labeling.
+   The strongest surprise is a fully permissive robots.txt — all crawlers
+   welcome. Biggest gaps: no llms.txt, OG image missing, very thin content
+   volume (315 words), and an h1 that reads as a marketing tagline rather than
+   a semantic page descriptor.
+
+2. LLM / AI READINESS                                  [6/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest            │
+   │ /robots.txt     │ FOUND     │ Disallow: [empty] = all crawlers fully   │
+   │                 │           │ allowed. Crawl-delay: 10. AI bots:       │
+   │                 │           │ implicitly allowed. Sitemap declared.    │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [20/25 pts]
+   Heading hierarchy  : h1 "Our Intelligence built in. Your Innovation built on."
+                        — marketing tagline as h1; semantically functional but
+                        provides little descriptive context for agents.
+   Landmark regions   : Nav and footer landmarks present. Clean structure.
+   ARIA label quality : 2 unlabeled links (e22, e34) and 1 unlabeled button (e39).
+                        Social links labeled by platform name in lowercase
+                        ("linkedin", "twitter", "facebook", "instagram", "vimeo").
+   Total tree nodes   : 40 interactive refs (lean page)
+
+4. INTERACTIVE ELEMENT COVERAGE                        [17/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     2 │       1 │  50%      │
+   │ Links        │    38 │      36 │  95%      │
+   │ Inputs       │     0 │       0 │ N/A       │
+   └──────────────┴───────┴─────────┴───────────┘
+   1 unlabeled button (e39, appears to be mobile nav toggle).
+   2 unlabeled links (e22, e34 — likely icon/image links).
+
+5. AGENT NAVIGATION JOURNEY LOG                        [13/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 text readable, nav links labeled
+                                 (Advertiser Suite, Publisher Suite, Strata, etc.)
+   Step 2 — Navigate Content   : SUCCESS. Primary nav links (Products, Insights,
+                                 Company) present and labeled.
+   Step 3 — CTA Interaction    : SUCCESS. "Connect with our team and get started"
+                                 [e1] and "Explore Advertiser Suite" [e2] present.
+   Step 4 — Form Interaction   : N/A — no form on homepage.
+   Step 5 — Return to Home     : SUCCESS via logo/nav links.
+
+6. STRUCTURED DATA FINDINGS                            [9/15 pts]
+   JSON-LD schemas : WebPage (url, name, datePublished 2022-09-14,
+                     dateModified 2026-02-23, description), BreadcrumbList,
+                     WebSite with SearchAction (urlTemplate for site search).
+                     Missing: Organization/Corporation schema.
+   OG tags         : PARTIAL — og:locale, og:type, og:title, og:description,
+                     og:url, og:site_name present. MISSING: og:image (no
+                     social share image declared).
+   Meta description: PRESENT — "Directly access streaming video inventory from
+                     the world's leading publishers, boosting your working media
+                     by reducing middlemen."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [7/10 pts]
+   Page title retrieved : YES — "Direct Connections to Streaming Video Inventory
+                          | FreeWheel"
+   Body text length     : 315 words (thin — below average for a homepage)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Minimal
+   Verdict              : Fully accessible headlessly
+
+8. TOP 3 CRITICAL ISSUES
+   ① Thin content volume (315 words) — agents get very little text-based context
+     about FreeWheel's products and services from the homepage. Most content
+     may be behind scroll or JS-rendered sections.
+   ② No og:image — social sharing and agent preview cards will have no image.
+   ③ No llms.txt and no Organization schema — despite the permissive robots.txt
+     welcoming all crawlers, there's no structured content manifest or entity
+     declaration for LLMs.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Add og:image (at minimum a branded share image) to OG meta tags.
+   • Add aria-label to the unlabeled mobile nav button (e39) and two image links.
+
+   STRATEGIC (longer-term improvements):
+   • Add Organization JSON-LD schema — FreeWheel is a Comcast subsidiary,
+     which should be reflected in parentOrganization field.
+   • Create /llms.txt — the Insights & Blog section has content ideal for
+     LLM consumption.
+
+10. CLOSING NOTES
+    Site is built on WordPress with Yoast SEO (evident from robots.txt pattern
+    and JSON-LD structure). NetworkIdle achieved — clean page load. Content
+    volume on homepage is intentionally lean; most product detail lives on
+    sub-pages (Advertiser Suite, Publisher Suite, Strata).
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

@@ -1,0 +1,109 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : comscore.com                                       ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: B  |  Score: 77/100
+   Comscore.com is well-structured for AI agent navigation with excellent
+   interactive element labeling, a functioning accessibility widget, and a solid
+   Organization JSON-LD schema. Strongest area is accessibility tree quality —
+   all 56 interactive elements carry descriptive names and semantic roles are
+   used correctly. Biggest gap is LLM readiness: no llms.txt, no AI-bot policy,
+   and a broken template variable in the JSON-LD schema undermine data quality.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest            │
+   │ /robots.txt     │ FOUND     │ Blocks AhrefsBot; no GPTBot, ClaudeBot,  │
+   │                 │           │ CCBot, anthropic-ai entries. AI bots:    │
+   │                 │           │ allowed by default (not mentioned).       │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [22/25 pts]
+   Heading hierarchy  : h1 present ("Comscore is a trusted currency for
+                        planning, transacting, and evaluating media across
+                        platforms.") — matches page title and OG title.
+   Landmark regions   : Nav (with dropdown buttons), main, footer all present.
+                        Accessibility widget with skip-to-content button.
+   ARIA label quality : All 56 interactive elements fully labeled. Tabs labeled
+                        "1 of 7" through "7 of 7" — functional but non-descriptive
+                        (tab content context missing from label).
+   Total tree nodes   : 56 interactive refs
+
+4. INTERACTIVE ELEMENT COVERAGE                        [19/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │    16 │      16 │ 100%      │
+   │ Links        │    35 │      35 │ 100%      │
+   │ Tabs         │     7 │       7 │ 100%      │
+   │ Inputs       │     0 │       0 │ N/A       │
+   └──────────────┴───────┴─────────┴───────────┘
+   Deduction: Tab labels ("1 of 7") lack content descriptors — agent cannot
+   determine destination without clicking.
+
+5. AGENT NAVIGATION JOURNEY LOG                        [13/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 readable, nav buttons labeled.
+   Step 2 — Navigate Content   : SUCCESS. Dropdown nav buttons (Solutions,
+                                 Insights, etc.) accessible via click.
+   Step 3 — CTA Interaction    : SUCCESS. "Contact us" [e15] and "Login" [e14]
+                                 clearly labeled. Multiple "Learn More" links
+                                 present (some context-dependent labeling).
+   Step 4 — Form Interaction   : N/A — no search input on homepage visible.
+   Step 5 — Return to Home     : SUCCESS. Logo link [e5] functional.
+
+6. STRUCTURED DATA FINDINGS                            [11/15 pts]
+   JSON-LD schemas : Organization — name, url, logo, sameAs (6 platforms),
+                     location, geo, address, founder, foundingDate. Present
+                     and detailed. BUG: twitter sameAs URL contains unresolved
+                     Smarty template literal:
+                     "{/literal}{$twitter_handle}{literal}" — broken value.
+   OG tags         : PRESENT — og:title, og:description, og:type, og:image,
+                     og:site_name. Missing: og:url.
+   Meta description: PRESENT — "Comscore is a trusted currency for planning,
+                     transacting, and evaluating media across platforms."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [7/10 pts]
+   Page title retrieved : YES — "Comscore is a trusted currency... - Comscore, Inc."
+   Body text length     : 628 words (good content volume)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Not measured (networkidle timeout)
+   Verdict              : Partially accessible — networkidle timeout indicates
+                          continuous background activity (analytics/trackers)
+                          that may slow headless page capture.
+
+8. TOP 3 CRITICAL ISSUES
+   ① No llms.txt — Comscore produces extensive research and measurement data
+     that LLMs would benefit from structured access to. No manifest provided.
+   ② Broken JSON-LD template variable — the Twitter sameAs field contains a
+     raw Smarty template tag, not a real URL. Corrupts structured data output.
+   ③ Tab labels non-descriptive — 7 content tabs labeled only "1 of 7" through
+     "7 of 7". Agents cannot determine content before clicking.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Fix the Smarty template bug in JSON-LD — resolve `{$twitter_handle}` to
+     the actual Twitter/X URL before serialization.
+   • Add og:url to OG meta tags (missing from current implementation).
+
+   STRATEGIC (longer-term improvements):
+   • Add /llms.txt declaring Comscore's research library, measurement products,
+     case studies, and API documentation as LLM-accessible content sections.
+   • Add descriptive aria-label to carousel tabs (e.g. "Tab 1: Box Office Data")
+     so agents can navigate without blind clicking.
+
+10. CLOSING NOTES
+    Page hit networkidle timeout (25s) suggesting continuous background script
+    activity. Content was fully loaded and accessible. Carousel and tab
+    components use proper ARIA roles. The Proximic sub-brand has its own
+    navigation button and subdomain — not included in this audit scope.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

@@ -1,0 +1,121 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : iabtechlab.com                                     ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: B  |  Score: 77/100
+   IAB Tech Lab has excellent link labeling — every standard, pillar, and
+   initiative carries a fully descriptive accessible name. The JSON-LD stack is
+   comprehensive (WebPage, WebSite with SearchAction, Organization, ImageObject,
+   BreadcrumbList). The strongest areas are structured data and interactive
+   coverage. The notable irony: Tech Lab is actively defining Agentic Advertising
+   standards (AAMP, ARTF) but has no llms.txt, and a cookie dialog captures the
+   page h1 before agents can read the actual page heading.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — the organization defining agentic  │
+   │                 │           │ advertising standards has no LLM manifest│
+   │ /robots.txt     │ FOUND     │ WordPress structure. Crawl-delay: 30     │
+   │                 │           │ (restrictive). No GPTBot, ClaudeBot, or  │
+   │                 │           │ anthropic-ai entries. Uploads allowed.   │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [20/25 pts]
+   Heading hierarchy  : h1 returns "Your choice regarding cookies on this site"
+                        — the cookie consent dialog renders over the page and
+                        its h1 takes precedence. Actual page h1 not captured.
+   Landmark regions   : Nav with full section links, footer, main detected.
+   ARIA label quality : Outstanding — every standard link includes full context:
+                        "AAMP - Agentic Advertising Management Protocols from
+                        IAB Tech Lab", "ARTF (Agentic RTB Framework)", etc.
+                        Only 1 unlabeled element (button e18).
+   Total tree nodes   : 74 interactive refs
+
+4. INTERACTIVE ELEMENT COVERAGE                        [19/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     7 │       6 │  86%      │
+   │ Links        │    66 │      66 │ 100%      │
+   │ Searchbox    │     1 │       0 │   0%      │
+   └──────────────┴───────┴─────────┴───────────┘
+   1 unlabeled button (e18 — likely mobile menu toggle).
+   Searchbox [e16] has no accessible label (aria-label missing).
+
+5. AGENT NAVIGATION JOURNEY LOG                        [13/15 pts]
+   Step 1 — Land + Orient      : PARTIAL. True page h1 blocked by cookie dialog.
+                                 Nav links (Membership, Standards, Working Groups,
+                                 Events, Software, News & Blog, Tools Portal,
+                                 Compliance) all fully labeled.
+   Step 2 — Navigate Content   : SUCCESS. Content card links extremely descriptive.
+                                 Agentic pillar content immediately discoverable.
+   Step 3 — CTA Interaction    : SUCCESS. "Become a Member" [e53], "Join the IAB
+                                 Tech Lab" [e58/e68] clearly labeled.
+   Step 4 — Form Interaction   : PARTIAL. Searchbox [e16] present and accessible
+                                 but lacks aria-label — agents cannot identify it
+                                 by role+label.
+   Step 5 — Return to Home     : SUCCESS. Logo link "IAB Tech Lab" [e5] present.
+
+6. STRUCTURED DATA FINDINGS                            [13/15 pts]
+   JSON-LD schemas : WebPage (url, name, datePublished 2024-12-19,
+                     dateModified 2026-02-26, description, primaryImage,
+                     breadcrumb), ImageObject, BreadcrumbList, WebSite
+                     (with SearchAction urlTemplate), Organization (name, url,
+                     logo with dimensions, sameAs: Facebook + X/Twitter).
+                     Excellent overall — missing: foundingDate, address.
+   OG tags         : FULL SET — og:locale, og:type, og:title, og:description,
+                     og:url, og:site_name, og:image (512×512 PNG with type).
+   Meta description: PRESENT — "Tech Lab is a non-profit that works with global
+                     members to build technology standards enabling growth and
+                     trust in the digital ecosystem."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [7/10 pts]
+   Page title retrieved : YES — "IAB Tech Lab | Defining Standards for the
+                          digital ecosystem"
+   Body text length     : 293 words (thin — cookie dialog reduces visible count)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Cookie consent dialog covers page initially
+   Verdict              : Fully accessible headlessly — cookie dialog non-blocking
+                          to underlying content
+
+8. TOP 3 CRITICAL ISSUES
+   ① No llms.txt — the organization actively developing AAMP, ARTF, and Agentic
+     AI pillar standards for the advertising ecosystem has no LLM content
+     manifest. This is the most notable gap in the entire audit set.
+   ② Cookie dialog captures h1 — agents landing on the page read a consent
+     dialog heading, not the page's primary purpose. Should be resolved by
+     dismissing cookie dialog before agent-accessible h1 is captured.
+   ③ Crawl-delay: 30 — significantly restrictive for a standards body that
+     produces frequent spec updates. AI agents and search crawlers that respect
+     this delay will have stale content.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Add aria-label="Search" to the searchbox [e16] — trivial fix, meaningful
+     for agent navigation.
+   • IAB Tech Lab should be the first site in the ad-tech ecosystem to publish
+     /llms.txt — it would set the standard for the industry it serves.
+
+   STRATEGIC (longer-term improvements):
+   • Reduce Crawl-delay from 30 to 5-10 seconds to improve AI content freshness.
+   • Use the AAMP initiative as a framework to create a machine-readable
+     standards catalog at /api/standards or similar, enabling agents to discover
+     and reference Tech Lab specs programmatically.
+
+10. CLOSING NOTES
+    IAB Tech Lab's Agentic Advertising Management Protocols (AAMP) and
+    Agentic RTB Framework (ARTF) are visible on the homepage — this site is
+    directly relevant to the future of AI agent advertising. The site uses
+    WordPress with Yoast SEO. Cookie consent dialog (non-Cloudflare) is present
+    on load but content is accessible behind it. No redirects encountered.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

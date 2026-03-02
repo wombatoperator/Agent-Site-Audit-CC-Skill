@@ -1,0 +1,112 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : advertising.amazon.com                             ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 71/100
+   Amazon Ads homepage is functionally accessible to AI agents with clean link
+   labeling and a rich, navigable accessibility tree. The strongest area is
+   interactive element coverage — all links carry descriptive names and navigation
+   is deep and well-structured. The biggest gap is LLM readiness: no llms.txt,
+   no JSON-LD schema, and no explicit AI-bot policy in robots.txt leave agents
+   without authoritative context about the site's content and intent.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest present    │
+   │ /robots.txt     │ FOUND     │ Generic rules only; no GPTBot, ClaudeBot,│
+   │                 │           │ CCBot, anthropic-ai, or PerplexityBot    │
+   │                 │           │ entries. AI bots: not mentioned (allowed │
+   │                 │           │ by default). 10 sitemaps declared.       │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [20/25 pts]
+   Heading hierarchy  : Single h1 "Your brand, connected where customers shop
+                        and stream" — clean. h2+ structure present in page body.
+   Landmark regions   : Nav present with deep hierarchical menuitem/link tree.
+                        Main and footer landmarks detected.
+   ARIA label quality : All 183 interactive elements have descriptive accessible
+                        names. One unlabeled menuitem (e46, e76, e101, e146,
+                        e179) — likely separator/grouping elements.
+   Total tree nodes   : ~208 interactive refs in full snapshot
+
+4. INTERACTIVE ELEMENT COVERAGE                        [18/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     0 │       0 │ N/A       │
+   │ Links        │  ~165 │    ~160 │ ~97%      │
+   │ Inputs       │     0 │       0 │ N/A       │
+   │ Combobox     │     1 │       1 │ 100%      │
+   │ Menuitems    │   ~43 │     ~38 │ ~88%      │
+   └──────────────┴───────┴─────────┴───────────┘
+   Note: All primary CTAs ("Register", "Get started", "Sign in") are links,
+   not buttons — accessible but non-standard for primary action elements.
+
+5. AGENT NAVIGATION JOURNEY LOG                        [12/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 "Your brand, connected where
+                                 customers shop and stream" immediately readable.
+                                 Nav links fully labeled.
+   Step 2 — Navigate Content   : SUCCESS. Clicked "Small business" [e3].
+                                 Page loaded. h1 unchanged (SPA scroll behavior).
+   Step 3 — CTA Interaction    : SUCCESS. "Register" [e9] and "Get started"
+                                 [e10] links present and labeled.
+   Step 4 — Form Interaction   : N/A — no search box or contact form on homepage.
+   Step 5 — Return to Home     : SUCCESS. Navigation returned to homepage state.
+
+6. STRUCTURED DATA FINDINGS                            [8/15 pts]
+   JSON-LD schemas : NONE — no schema.org markup present
+   OG tags         : PRESENT — og:title, og:description, og:image, og:type,
+                     og:url, og:site_name all present
+   Meta description: PRESENT (139 chars) — "Grow your business and increase
+                     sales with online advertising solutions that help you find,
+                     attract, and engage customers on and off Amazon."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [8/10 pts]
+   Page title retrieved : YES — "Amazon Ads: Online advertising for businesses
+                          of all sizes"
+   Body text length     : 587 words (adequate content volume)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : 4 elements (minimal impact)
+   Verdict              : Fully accessible headlessly
+
+8. TOP 3 CRITICAL ISSUES
+   ① No llms.txt — Amazon Ads has rich product/solution content ideal for LLM
+     consumption, but provides no structured manifest. Agents must infer site
+     structure from the nav tree alone.
+   ② No JSON-LD schema — Zero structured data markup. Agents and search engines
+     cannot extract entity relationships (Organization, Product, Service) without
+     parsing free-form HTML.
+   ③ No AI-bot policy in robots.txt — Ambiguous stance on AI crawler access.
+     GPTBot, ClaudeBot, anthropic-ai etc. not mentioned. Explicit allowances
+     would build trust and ensure predictable crawl behavior.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Add /llms.txt with sections for Products, Solutions, Case Studies, and
+     Academy — the nav structure maps directly to logical LLM content sections.
+   • Add Organization and WebSite JSON-LD schema to homepage — at minimum
+     name, url, description, and sameAs (LinkedIn, social handles).
+
+   STRATEGIC (longer-term improvements):
+   • Implement JSON-LD on product pages (SponsoredAds, DSP, AMC) with
+     Service/Product schema types to enable rich agent understanding.
+   • Add explicit AI-bot allow rules to robots.txt for GPTBot, ClaudeBot,
+     and anthropic-ai — proactive signal that Amazon Ads welcomes AI discovery.
+
+10. CLOSING NOTES
+    Audit conducted on the US English homepage. The site uses a deep SPA
+    navigation pattern — clicking nav links scrolls/renders new content without
+    URL changes, which means agents following sequential link navigation may
+    not traverse all product pages. Dynamic content sections (video, carousels)
+    may not fully render in headless context. No redirects encountered.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

@@ -1,0 +1,110 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : criteo.com                                         ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 67/100
+   Criteo's homepage has strong structured data (a complete Corporation schema
+   and full OG tag set) and rich content volume (1,170 words). However, ~25% of
+   links in the accessibility tree are unlabeled — a significant barrier for
+   agents trying to navigate without visual context. LLM readiness is absent
+   (no llms.txt). Note: Criteo acquired Lotame in 2023; lotame.com redirects
+   to this domain.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest            │
+   │ /robots.txt     │ FOUND     │ Blocks scraper bots (HTTrack, BLEXBot,   │
+   │                 │           │ etc.) but no GPTBot, ClaudeBot, CCBot,   │
+   │                 │           │ or anthropic-ai entries. AI bots allowed  │
+   │                 │           │ by default. 9 regional sitemaps declared. │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [16/25 pts]
+   Heading hierarchy  : h1 "Make every shopping moment smarter." — clean
+                        single h1 present.
+   Landmark regions   : Nav and footer present. Main landmark detected.
+   ARIA label quality : Significant issue — ~22 of ~98 links are unlabeled
+                        (empty accessible name). These appear to be decorative
+                        image links or duplicate card links that lack alt text
+                        or aria-label. Agents cannot determine destination.
+   Total tree nodes   : 98 interactive refs
+
+4. INTERACTIVE ELEMENT COVERAGE                        [14/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     9 │       9 │ 100%      │
+   │ Links        │    89 │      67 │  75%      │
+   │ Inputs       │     0 │       0 │ N/A       │
+   └──────────────┴───────┴─────────┴───────────┘
+   22 unlabeled links (e12, e14, e16, e18, e25-e37, e39, e41, e43, e90-e95)
+   — likely paired image+text card links where only the text version is labeled.
+
+5. AGENT NAVIGATION JOURNEY LOG                        [11/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 "Make every shopping moment
+                                 smarter." readable. Labeled nav links present.
+   Step 2 — Navigate Content   : PARTIAL. Navigation links (Advertisers,
+                                 Retailers, Agencies) are labeled with context.
+                                 Many content card links unlabeled.
+   Step 3 — CTA Interaction    : SUCCESS. Multiple "Contact Sales" links/buttons
+                                 and "Get started" [e42] present and labeled.
+   Step 4 — Form Interaction   : N/A — search requires button click to expand.
+   Step 5 — Return to Home     : SUCCESS. Logo link [e1] labeled "Criteo".
+
+6. STRUCTURED DATA FINDINGS                            [13/15 pts]
+   JSON-LD schemas : Corporation — comprehensive: name, legalName, url, logo,
+                     foundingDate (2005), sameAs (LinkedIn, YouTube, X,
+                     Facebook, Instagram, Wikipedia), address (Paris HQ),
+                     description, WebPage entity. Well-formed, no template bugs.
+   OG tags         : FULL SET — og:locale, og:type, og:title, og:description,
+                     og:url, og:site_name, og:image (with dimensions), og:image:type
+   Meta description: PRESENT — "Make every shopping moment smarter with Ads
+                     powered by commerce AI fueled by the world's largest set
+                     of commerce data"
+   Twitter cards   : Not detected (minor deduction)
+
+7. BOT RESISTANCE ASSESSMENT                           [8/10 pts]
+   Page title retrieved : YES — "The Global Commerce Media Advertising Platform"
+   Body text length     : 1,170 words (excellent content volume)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Cookie consent popup present (Accept/Details buttons)
+   Verdict              : Fully accessible headlessly — cookie consent does not
+                          block content access
+
+8. TOP 3 CRITICAL ISSUES
+   ① 22 unlabeled links — agents cannot determine where ~25% of navigable links
+     lead without visual context. These appear to be image-link duplicates of
+     labeled text links on the same cards — a fixable pattern.
+   ② No llms.txt — Criteo has extensive commerce data, case studies, and API
+     docs. No structured LLM manifest exists to guide AI content discovery.
+   ③ No Twitter/X card tags — despite having a Twitter presence in JSON-LD
+     sameAs, no twitter:card meta tags are present.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Add aria-label or alt text to all image links — the card pattern of
+     image-link + text-link should either merge into one link or add aria-label
+     to the image link with the destination context.
+   • Add Twitter card meta tags (twitter:card, twitter:title, twitter:description).
+
+   STRATEGIC (longer-term improvements):
+   • Add /llms.txt declaring Criteo's Commerce Media Platform products,
+     research reports, developer docs, and case studies.
+   • Consider adding WebSite schema with SearchAction to help agents discover
+     the site's search functionality.
+
+10. CLOSING NOTES
+    Criteo acquired Lotame in 2023; lotame.com and videoamp.com redirect to
+    criteo.com. This audit covers the current criteo.com homepage only.
+    Cookie consent dialog present but non-blocking to content access.
+    Page loaded cleanly with networkidle achieved.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

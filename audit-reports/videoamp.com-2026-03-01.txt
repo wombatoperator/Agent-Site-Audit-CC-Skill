@@ -1,0 +1,156 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : videoamp.com                                       ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 65/100
+   VideoAmp has a solid Yoast JSON-LD stack — complete Organization entity with
+   logo, all four sameAs profiles, and a fresh dateModified (2025-10-31). The
+   site also includes a unique VideoObject JSON-LD block with a full transcript
+   of the homepage sizzle video (a Morgan Freeman impersonation). Major
+   weaknesses: no llms.txt despite running on WordPress/Yoast v26.8-range stack,
+   no skip link, and an overwhelming number of generic duplicate link labels
+   (37+ undifferentiated "Read More", "View all Press", "Read testimonial",
+   "View all" links). Social footer links are labeled only with abbreviations
+   ("LI", "IG", "FB", "TW") — technically labeled but not descriptive.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest. Yoast     │
+   │                 │           │ robots.txt block present — upgrading to  │
+   │                 │           │ Yoast v26.8+ would auto-generate this.   │
+   │ /robots.txt     │ FOUND     │ Yoast-generated. Fully permissive        │
+   │                 │           │ (Disallow: [empty]). Crawl-delay: 10.   │
+   │                 │           │ Sitemap declared. No AI-specific entries.│
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [14/25 pts]
+   Heading hierarchy  : h1 "Congratulations. You just time traveled to the
+                        future of advertising." — quirky marketing copy;
+                        present and readable but low information value.
+   Landmark regions   : Nav present and labeled. Footer present. NO skip
+                        link detected — agents must traverse full nav to
+                        reach main content.
+   ARIA label quality : Navigation links well-labeled (VALID™, Solutions,
+                        Powered by VideoAmp™, Resources, Our Company).
+                        Footer nav also well-labeled (OUR COMPANY, CAREERS,
+                        LIFE AT VIDEOAMP, CONTACT, Planning & Optimization,
+                        Measurement & Currency, Agencies, BRANDS, PUBLISHERS,
+                        etc.). However, content body links are predominantly
+                        generic: 7× "Read More", 7× "View all Press",
+                        7× "Read testimonial", 6× "Read more", 5× "Learn
+                        more"/"LEARN MORE", 3× "View all", 2× "VIEW ALL"
+                        — ~37 links share undifferentiated accessible names.
+                        Social links: "LI", "IG", "FB", "TW" — abbreviated
+                        but technically labeled.
+   Total tree nodes   : 79 interactive refs
+
+4. INTERACTIVE ELEMENT COVERAGE                        [14/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     2 │       2 │ 100%      │
+   │ Links        │    76 │      76 │ 100%*     │
+   │ Textbox      │     1 │       1 │ 100%      │
+   └──────────────┴───────┴─────────┴───────────┘
+   *100% technically labeled but ~49% carry contextually meaningless labels
+   (generic "Read More" / "View all Press" / "Read testimonial" patterns).
+   Social links labeled with abbreviations ("LI"→LinkedIn, "IG"→Instagram,
+   "FB"→Facebook, "TW"→Twitter/X) — destination platform not explicit.
+
+5. AGENT NAVIGATION JOURNEY LOG                        [12/15 pts]
+   Step 1 — Land + Orient      : PARTIAL. h1 present and readable but purely
+                                 marketing ("time traveled to the future").
+                                 Nav links clearly label product categories.
+   Step 2 — Navigate Content   : POOR. Carousel/press sections expose 7
+                                 identical "Read More" + 7 identical "View all
+                                 Press" links — agent cannot differentiate
+                                 articles. 7 "Read testimonial" links also
+                                 undifferentiated.
+   Step 3 — CTA Interaction    : SUCCESS. "Let's talk" [e7] and "Let's Talk"
+                                 [e8] both accessible and labeled.
+   Step 4 — Form Interaction   : SUCCESS. Email textbox [e51] labeled
+                                 "Email address*". Submit form button [e52]
+                                 labeled. Newsletter signup form present.
+   Step 5 — Return to Home     : SUCCESS. "Home" logo link [e1] present.
+
+6. STRUCTURED DATA FINDINGS                            [11/15 pts]
+   JSON-LD schemas : Two blocks — (1) VideoObject: Full schema for homepage
+                     sizzle video (Wistia embed), including duration PT1M55S,
+                     thumbnailUrl, embedUrl, uploadDate 2025-01-31, and full
+                     transcript text. Unique in this audit cohort.
+                     (2) Yoast @graph: WebPage (datePublished 2020-02-12,
+                     dateModified 2025-10-31 — recent), BreadcrumbList,
+                     WebSite (name, description "Optimizing brand marketing to
+                     business results", SearchAction), Organization (name, url,
+                     logo URL populated with dimensions 360×205, sameAs:
+                     Facebook/X/Instagram/LinkedIn). Organization entity is
+                     complete — the most populated in this audit cohort.
+                     WebSite description differs from meta description —
+                     inconsistent brand copy in schema vs. page meta.
+   OG tags         : og:title "VideoAmp" (not the full title "VideoAmp |
+                     Media Measurement Software" — condensed but not broken).
+                     og:type "website" ✓. og:image (WordPress upload JPEG)
+                     present. og:description "Measurement for data-driven
+                     advertising." (short). og:url, og:site_name present.
+                     Missing: og:locale. No Twitter cards detected.
+   Meta description: PRESENT — "A media measurement software company offering
+                     powerful audience segmentation for programmatic ads in a
+                     more valuable data-driven ecosystem."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [9/10 pts]
+   Page title retrieved : YES — "VideoAmp | Media Measurement Software"
+   Body text length     : 1,127 words (good)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : None significant; networkidle achieved cleanly
+   Verdict              : Fully accessible headlessly
+
+8. TOP 3 CRITICAL ISSUES
+   ① ~37 undifferentiated generic links — agents cannot distinguish between
+     the 7 "Read More" article links, 7 "View all Press" buttons, or 7
+     "Read testimonial" links. Screen reader and agent parity both suffer.
+   ② No llms.txt — site runs on WordPress/Yoast (Crawl-delay: 10 pattern
+     confirms Yoast robots block). Upgrading Yoast to v26.8+ would auto-
+     generate llms.txt immediately. VideoAmp's Case Studies, Whitepapers,
+     and Thought Leadership content is high-value LLM training material.
+   ③ No skip link — agents traversing the full nav (5 top-level items,
+     each with dropdown submenus) before reaching h1 adds friction. Other
+     sites in this audit set (Magnite, IAB Tech Lab) implement skip links.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Upgrade Yoast SEO to v26.8+ — this one change auto-generates /llms.txt,
+     addressing the most significant LLM readiness gap immediately.
+   • Add contextual aria-labels to "Read More" links — e.g., "Read more about
+     [article title]" using aria-label or aria-describedby on each card link.
+   • Add aria-label to social footer links — replace "LI"/"IG"/"FB"/"TW"
+     with "VideoAmp on LinkedIn", "VideoAmp on Instagram", etc.
+
+   STRATEGIC (longer-term improvements):
+   • Add a skip-to-main-content link — aligns with WCAG 2.1 and improves
+     agent traversal efficiency.
+   • Align WebSite JSON-LD description with meta description — currently
+     "Optimizing brand marketing to business results" (schema) differs from
+     "A media measurement software company..." (meta). Pick one and unify.
+   • Expand og:title to full brand + descriptor: "VideoAmp | Media
+     Measurement Software" to maximize social share and AI snippet quality.
+
+10. CLOSING NOTES
+    VideoAmp's Organization JSON-LD is the most completely populated in this
+    audit cohort — logo with dimensions, four sameAs social profiles, all
+    correctly structured. The VideoObject JSON-LD with a full 500+ word
+    video transcript (including a Morgan Freeman voice impersonation disclaimer)
+    is the most creative structured data found in this audit set. However, the
+    link labeling situation in the content body is the worst in the cohort —
+    37+ generic labels make the body completely agent-opaque. Built on
+    WordPress/Yoast. No AI-agent-specific blocking observed.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

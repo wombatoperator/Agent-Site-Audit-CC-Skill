@@ -1,0 +1,118 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : integralads.com                                    ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 67/100
+   Integral Ad Science has good nav coverage and a rich JSON-LD stack, but
+   suffers from multiple metadata quality bugs that directly harm AI agent
+   comprehension: the OG title is just "Home", the WebSite JSON-LD description
+   is a campaign title ("The Hidden Cost of MFA Webinar"), and a deprecated
+   Google+ sameAs URL persists. No llms.txt. The accessibility tree is
+   serviceable but cluttered with multiple "Read More" variants.
+
+2. LLM / AI READINESS                                  [5/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest            │
+   │ /robots.txt     │ FOUND     │ WordPress/Yoast. Disallow: /*?* blocks   │
+   │                 │           │ all query-string URLs. No GPTBot,        │
+   │                 │           │ ClaudeBot, or AI-specific entries.       │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [19/25 pts]
+   Heading hierarchy  : h1 "THE MOST ACTIONABLE DATA TO DRIVE SUPERIOR RESULTS"
+                        — all-caps but present and readable. Single h1.
+   Landmark regions   : Nav fully labeled with product, channel, and customer
+                        segmentation. Footer present.
+   ARIA label quality : 2 unlabeled links (e24, e28 — image card links). One
+                        unlabeled icon link (e76). Social links include platform
+                        name ("Linkedin", "Instagram", "Facebook", "Youtube")
+                        though with trailing icon character artifacts.
+   Total tree nodes   : 76 interactive refs
+
+4. INTERACTIVE ELEMENT COVERAGE                        [16/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     3 │       3 │ 100%      │
+   │ Links        │    73 │      70 │  96%      │
+   │ Inputs       │     0 │       0 │ N/A       │
+   └──────────────┴───────┴─────────┴───────────┘
+   3 unlabeled links (e24, e28, e67/e76 — icon links).
+   Multiple "Read more" variants (Read More, Read more, READ MORE, Read More »)
+   share identical accessible names — 7+ undifferentiated links.
+
+5. AGENT NAVIGATION JOURNEY LOG                        [12/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 readable, nav links cover product
+                                 types (Ad Fraud, Brand Safety, Contextual
+                                 Targeting, Viewability, Attention) and channels.
+   Step 2 — Navigate Content   : SUCCESS. Extensive footer nav structure, clear
+                                 product categorization. "IAS Agent" link notable.
+   Step 3 — CTA Interaction    : SUCCESS. "GET THE REPORT", "OUR SOLUTIONS",
+                                 "CONTACT US" all labeled and accessible.
+   Step 4 — Form Interaction   : N/A — no form on homepage.
+   Step 5 — Return to Home     : SUCCESS. "IAS" logo link [e1] present.
+
+6. STRUCTURED DATA FINDINGS                            [7/15 pts]
+   JSON-LD schemas : Two Organization entities — one from Yoast (current),
+                     one legacy (http://schema.org): duplicate structures cause
+                     confusion. Yoast entity has correct logo URL and X sameAs.
+                     Legacy entity includes deprecated plus.google.com sameAs
+                     (Google+ shut down 2019) and outdated twitter.com handle.
+                     WebSite description BUG: "The Hidden Cost of MFA Webinar"
+                     — a campaign title leaked into the brand description field.
+   OG tags         : CRITICAL BUG — og:title is "Home" (not the brand/page name).
+                     og:description, og:url, og:site_name, og:image (5000×2617)
+                     all present. Missing: og:type, og:locale.
+   Meta description: PRESENT — "Integral Ad Science delivers the industry's most
+                     actionable data to drive superior results for the world's
+                     largest advertisers, publishers, and platforms."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [8/10 pts]
+   Page title retrieved : YES — "Integral Ad Science | Global Media Measurement
+                          & Optimization"
+   Body text length     : 876 words (good)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Minimal
+   Verdict              : Fully accessible headlessly
+
+8. TOP 3 CRITICAL ISSUES
+   ① og:title is "Home" — when this page is shared or indexed by AI systems,
+     the title "Home" is completely non-descriptive. Likely a CMS override issue.
+   ② WebSite JSON-LD description = "The Hidden Cost of MFA Webinar" — a campaign
+     title has been accidentally set as the entire site's description in schema.
+     AI agents reading this schema will misidentify the site's purpose.
+   ③ Deprecated Google+ sameAs URL (plus.google.com) — sending AI crawlers to
+     a defunct platform. Should be replaced with current social profiles.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Fix og:title — override the CMS default "Home" with the actual page title
+     or brand name in the OG meta configuration.
+   • Fix WebSite JSON-LD description in Yoast settings — should be the brand
+     tagline, not a campaign name.
+   • Remove plus.google.com from the legacy Organization sameAs array.
+
+   STRATEGIC (longer-term improvements):
+   • Consolidate the two Organization JSON-LD schemas into one. Remove the
+     legacy http://schema.org block and maintain only the Yoast-managed one.
+   • Add /llms.txt — IAS Research, Media Quality Reports, and IAS Insider
+     content is highly valuable for LLM indexing.
+
+10. CLOSING NOTES
+    Site built on WordPress with Yoast SEO. NetworkIdle achieved — clean load.
+    Notable: "IAS Agent" link [e59] and "Responsible AI" [e65] link visible in
+    footer — IAS is actively developing AI capabilities. "Site indexing policy"
+    link [e72] present — click through for detailed crawl guidelines. Disallow:
+    /*?* in robots.txt may limit search engine and AI crawler coverage of
+    paginated or filtered content.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

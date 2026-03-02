@@ -1,0 +1,108 @@
+╔══════════════════════════════════════════════════════════════╗
+║         AI AGENT ACCESSIBILITY AUDIT REPORT                  ║
+║  Domain : indexexchange.com                                  ║
+║  Date   : 2026-03-01                                         ║
+║  Tool   : agent-browser v0.15.1                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+1. EXECUTIVE SUMMARY
+   Grade: C  |  Score: 73/100
+   Index Exchange has a well-structured accessibility tree with descriptive nav
+   and content links. The Yoast JSON-LD stack provides WebPage, WebSite (with
+   SearchAction), Organization, and BreadcrumbList schemas. Primary gap is no
+   llms.txt. A data quality bug in the Organization schema (empty logo URLs)
+   and five unlabeled social links reduce the score. h1 is present and meaningful.
+
+2. LLM / AI READINESS                                  [6/15 pts]
+   ┌─────────────────┬───────────┬──────────────────────────────────────────┐
+   │ File            │ Status    │ Summary                                  │
+   ├─────────────────┼───────────┼──────────────────────────────────────────┤
+   │ /llms.txt       │ NOT FOUND │ 404 — no LLM content manifest            │
+   │ /robots.txt     │ FOUND     │ Fully permissive (Disallow: [empty]).    │
+   │                 │           │ All crawlers welcome. Sitemap declared.   │
+   │                 │           │ No AI-specific entries.                  │
+   └─────────────────┴───────────┴──────────────────────────────────────────┘
+
+3. ACCESSIBILITY TREE ANALYSIS                         [19/25 pts]
+   Heading hierarchy  : h1 "Elevating ad tech to exceptional standards" — present
+                        and meaningful. Clean single h1.
+   Landmark regions   : Nav fully labeled, footer present, main detected.
+   ARIA label quality : Most links highly descriptive (article titles include
+                        full text). Five unlabeled footer icon links (e62-e66,
+                        likely social icons). Three "Read more" links without
+                        contextual labels (e25, e28, e30).
+   Total tree nodes   : 77 interactive refs
+
+4. INTERACTIVE ELEMENT COVERAGE                        [16/20 pts]
+   ┌──────────────┬───────┬─────────┬───────────┐
+   │ Element Type │ Total │ Labeled │ Coverage  │
+   ├──────────────┼───────┼─────────┼───────────┤
+   │ Buttons      │     5 │       5 │ 100%      │
+   │ Links        │    72 │      64 │  89%      │
+   │ Inputs       │     0 │       0 │ N/A       │
+   └──────────────┴───────┴─────────┴───────────┘
+   5 unlabeled social icon links in footer (e62-e66).
+   3 "Read more" links share identical labels — agents can't distinguish targets.
+   1 link contains icon character artifact: "Learn how {icon}" [e9].
+
+5. AGENT NAVIGATION JOURNEY LOG                        [13/15 pts]
+   Step 1 — Land + Orient      : SUCCESS. h1 readable, nav (Platform, Solutions,
+                                 Resources, About, Careers, Contact) all labeled.
+   Step 2 — Navigate Content   : SUCCESS. Deep nav structure with audience-specific
+                                 links (For Publishers, For Marketers, For DSPs).
+   Step 3 — CTA Interaction    : SUCCESS. "Explore our solutions" [e11],
+                                 "Contact us" [e31], "SIGN UP" [e61] labeled.
+   Step 4 — Form Interaction   : N/A — no visible form on homepage.
+   Step 5 — Return to Home     : SUCCESS. "Index Exchange Home page" [e1] labeled.
+
+6. STRUCTURED DATA FINDINGS                            [11/15 pts]
+   JSON-LD schemas : WebPage (datePublished 2021-09-27, dateModified 2026-01-29,
+                     description, primaryImage, breadcrumb), ImageObject,
+                     BreadcrumbList, WebSite (name, description, SearchAction),
+                     Organization (name, url, sameAs: Facebook/X/Instagram/
+                     LinkedIn). BUG: Organization logo url and contentUrl are
+                     empty strings — Yoast logo not configured.
+   OG tags         : FULL SET — locale, type, title, description, url, site_name,
+                     og:image (960×540 PNG with type declared).
+   Meta description: PRESENT — "Grow advertising revenue and reach consumers on
+                     any screen through Index Exchange's global supply-side
+                     platform and ad technology solutions."
+   Twitter cards   : Not detected
+
+7. BOT RESISTANCE ASSESSMENT                           [8/10 pts]
+   Page title retrieved : YES — "Index Exchange - Accelerating the Evolution of
+                          Ad Technology"
+   Body text length     : 556 words (adequate)
+   CAPTCHA detected     : NO
+   Lazy-load barriers   : Privacy choices dialog present (non-blocking)
+   Verdict              : Fully accessible headlessly
+
+8. TOP 3 CRITICAL ISSUES
+   ① No llms.txt — Index Exchange's blog, educational videos, and programmatic
+     resources would benefit from an LLM content manifest.
+   ② Organization logo has empty URL in JSON-LD — Yoast WordPress logo setting
+     not configured; agents and crawlers receive broken logo entity data.
+   ③ Five unlabeled social footer links — agents cannot identify social platform
+     destinations for these icon-only links.
+
+9. RECOMMENDATIONS
+   QUICK WINS (implement in < 1 week):
+   • Configure the Yoast SEO organization logo in WordPress settings to resolve
+     the empty URL bug in the Organization JSON-LD entity.
+   • Add aria-label to social footer icon links (e.g., "Index Exchange on LinkedIn").
+
+   STRATEGIC (longer-term improvements):
+   • Add /llms.txt with sections for Platform, Solutions, Educational Videos,
+     and Blog to support LLM content discovery.
+   • Add descriptive aria-labels to "Read more" links (e.g., "Read more about
+     Agentic Sell-Side Decisioning").
+
+10. CLOSING NOTES
+    Site built on WordPress with Yoast SEO (fully permissive robots.txt pattern).
+    NetworkIdle achieved — clean page load. Content is AI-relevant (articles on
+    agentic advertising, programmatic efficiency). No redirects encountered.
+    Privacy choices button [e76] has descriptive label — good practice.
+
+════════════════════════════════════════════════════════════════
+   Report generated by Claude Code · agent-browser-audit skill
+════════════════════════════════════════════════════════════════

@@ -2,9 +2,21 @@
 name: agent-browser-audit
 description: Audit a website for AI agent accessibility. Use when asked to audit, score, or test how well a site works for AI agents, automated browsing, or agent-based advertising interactions.
 argument-hint: <url>
-disable-model-invocation: true
-allowed-tools: Bash
 ---
+
+You are orchestrating an AI Agent Accessibility Audit for: **$ARGUMENTS**
+
+Spawn a sub-agent using the Agent tool with these exact parameters:
+- `subagent_type`: `"general-purpose"`
+- `model`: `"haiku"`
+- `description`: `"Audit $ARGUMENTS for AI agent accessibility"`
+- `prompt`: the full audit instructions below (substitute the actual URL for $ARGUMENTS)
+
+The sub-agent will execute all browser commands and write the final report. Wait for it to complete, then confirm the results to the user.
+
+---
+
+**PROMPT TO PASS TO THE SUB-AGENT (substitute actual URL):**
 
 You are conducting a structured AI Agent Accessibility Audit using `npx agent-browser` (v0.15.1). The target URL is: **$ARGUMENTS**
 
@@ -16,11 +28,16 @@ Complete all 9 steps below in order. Do not skip steps. Record all findings as y
 
 1. Accept `$ARGUMENTS` as the target URL.
 2. Derive `<domain>` by stripping the protocol and trailing slash (e.g. `example.com`).
-3. Open the page and wait for full load:
+3. Generate a unique session name to avoid daemon collisions when multiple audits run in parallel:
    ```bash
-   npx agent-browser --session-name <domain> open $ARGUMENTS && npx agent-browser --session-name <domain> wait --load networkidle
+   SESSION=$(echo "<domain>-$(date +%s)") && echo "SESSION=$SESSION"
    ```
-4. Ensure the output directory exists:
+   **Record this SESSION value. Use it for every `--session-name` flag for the rest of this audit — never use the bare domain.**
+4. Open the page and wait for full load:
+   ```bash
+   npx agent-browser --session-name $SESSION open $ARGUMENTS && npx agent-browser --session-name $SESSION wait --load networkidle
+   ```
+5. Ensure the output directory exists:
    ```bash
    mkdir -p ./audit-reports
    ```
