@@ -46,12 +46,15 @@ Complete all 9 steps below in order. Do not skip steps. Record all findings as y
 
 ## Step 2 — Proactive AI File Check
 
-Use `npx agent-browser --session-name <domain> eval` to fetch each file from the site origin and record: **found / not found** plus a brief content summary if found.
+Fetch each file from the site origin and record: **found / not found** plus a brief content summary if found.
 
 ```bash
-# llms.txt — LLM-ready content manifest
-npx agent-browser --session-name <domain> eval "fetch('/llms.txt').then(r=>r.ok?r.text():Promise.reject(r.status)).catch(e=>'NOT FOUND: '+e)"
+npx agent-browser --session-name $SESSION eval "fetch('/llms.txt').then(r=>r.ok?r.text():Promise.reject(r.status)).catch(e=>'NOT FOUND: '+e)"
+```
 
+```bash
+npx agent-browser --session-name $SESSION eval "fetch('/robots.txt').then(r=>r.ok?r.text():Promise.reject(r.status)).catch(e=>'NOT FOUND: '+e)"
+```
 
 **Important:** If the `/llms.txt` fetch returns a 200 but the content is HTML (contains `<!DOCTYPE` or `<html`), treat it as NOT FOUND — the server's catch-all router is intercepting the path.
 
@@ -69,11 +72,11 @@ Record per file:
 Capture and analyze the accessibility tree:
 
 ```bash
-# Full tree
-npx agent-browser --session-name <domain> snapshot
+npx agent-browser --session-name $SESSION snapshot
+```
 
-# Interactive + compact view (use refs from this for all subsequent steps)
-npx agent-browser --session-name <domain> snapshot -i -c
+```bash
+npx agent-browser --session-name $SESSION snapshot -i -c
 ```
 
 Analyze and record:
@@ -90,11 +93,11 @@ Analyze and record:
 Using the refs from the `-i -c` snapshot in Step 3:
 
 ```bash
-# Catalog all buttons
-npx agent-browser --session-name <domain> find role button text
+npx agent-browser --session-name $SESSION find role button text
+```
 
-# Catalog all links
-npx agent-browser --session-name <domain> find role link text
+```bash
+npx agent-browser --session-name $SESSION find role link text
 ```
 
 For each interactive element type, record:
@@ -110,17 +113,19 @@ Compute: **Interactive Element Coverage %** = (labeled / total) × 100
 ## Step 5 — Structured Data Check
 
 ```bash
-# JSON-LD schema blocks
-npx agent-browser --session-name <domain> eval "JSON.stringify([...document.querySelectorAll('script[type=\"application/ld+json\"]')].map(s=>{try{return JSON.parse(s.textContent)}catch(e){return 'PARSE_ERROR'}}),null,2)"
+npx agent-browser --session-name $SESSION eval "JSON.stringify([...document.querySelectorAll('script[type=\"application/ld+json\"]')].map(s=>{try{return JSON.parse(s.textContent)}catch(e){return 'PARSE_ERROR'}}),null,2)"
+```
 
-# Open Graph tags
-npx agent-browser --session-name <domain> eval "JSON.stringify(Object.fromEntries([...document.querySelectorAll('meta[property^=\"og:\"]')].map(m=>[m.getAttribute('property'),m.content])),null,2)"
+```bash
+npx agent-browser --session-name $SESSION eval "JSON.stringify(Object.fromEntries([...document.querySelectorAll('meta[property^=\"og:\"]')].map(m=>[m.getAttribute('property'),m.content])),null,2)"
+```
 
-# Meta description
-npx agent-browser --session-name <domain> eval "document.querySelector('meta[name=\"description\"]')?.content ?? 'NOT FOUND'"
+```bash
+npx agent-browser --session-name $SESSION eval "document.querySelector('meta[name=\"description\"]')?.content ?? 'NOT FOUND'"
+```
 
-# Twitter/X card tags
-npx agent-browser --session-name <domain> eval "JSON.stringify(Object.fromEntries([...document.querySelectorAll('meta[name^=\"twitter:\"]')].map(m=>[m.getAttribute('name'),m.content])),null,2)"
+```bash
+npx agent-browser --session-name $SESSION eval "JSON.stringify(Object.fromEntries([...document.querySelectorAll('meta[name^=\"twitter:\"]')].map(m=>[m.getAttribute('name'),m.content])),null,2)"
 ```
 
 Record:
@@ -139,31 +144,31 @@ Perform these steps in sequence:
 
 1. **Land + orient**: Read the page `h1` text and primary `nav` link labels
    ```bash
-   npx agent-browser --session-name <domain> eval "document.querySelector('h1')?.innerText"
+   npx agent-browser --session-name $SESSION eval "document.querySelector('h1')?.innerText"
    ```
 
 2. **Navigate to primary content**: Click the most prominent non-logo nav link (use ref from snapshot)
    ```bash
-   npx agent-browser --session-name <domain> click <ref>
-   npx agent-browser --session-name <domain> wait --load networkidle
-   npx agent-browser --session-name <domain> eval "document.querySelector('h1')?.innerText"
+   npx agent-browser --session-name $SESSION click <ref>
+   npx agent-browser --session-name $SESSION wait --load networkidle
+   npx agent-browser --session-name $SESSION eval "document.querySelector('h1')?.innerText"
    ```
 
 3. **Locate primary CTA**: Find and interact with the main call-to-action button
    ```bash
-   npx agent-browser --session-name <domain> find role button text
-   npx agent-browser --session-name <domain> click <cta-ref>
+   npx agent-browser --session-name $SESSION find role button text
+   npx agent-browser --session-name $SESSION click <cta-ref>
    ```
 
 4. **Attempt form interaction** (if a search box or contact form is present):
    ```bash
-   npx agent-browser --session-name <domain> type <input-ref> "test query"
+   npx agent-browser --session-name $SESSION type <input-ref> "test query"
    ```
 
 5. **Navigate back** to homepage:
    ```bash
-   npx agent-browser --session-name <domain> eval "history.back()"
-   npx agent-browser --session-name <domain> wait --load networkidle
+   npx agent-browser --session-name $SESSION eval "history.back()"
+   npx agent-browser --session-name $SESSION wait --load networkidle
    ```
 
 Record for each step: what was attempted, ref used, outcome, any error messages from agent-browser.
@@ -173,27 +178,25 @@ Record for each step: what was attempted, ref used, outcome, any error messages 
 ## Step 7 — Bot Resistance Check
 
 ```bash
-# Verify JS executed and page title is present
-npx agent-browser --session-name <domain> eval "document.title"
+npx agent-browser --session-name $SESSION eval "document.title"
+```
 
-# Check content volume (blank/thin pages score poorly)
-npx agent-browser --session-name <domain> eval "document.body.innerText.trim().length"
+```bash
+npx agent-browser --session-name $SESSION eval "document.body.innerText.trim().split(/\s+/).length"
+```
 
-# Check visible text word count
-npx agent-browser --session-name <domain> eval "document.body.innerText.trim().split(/\s+/).length"
+```bash
+npx agent-browser --session-name $SESSION find text "captcha"
+npx agent-browser --session-name $SESSION find text "verify you are human"
+npx agent-browser --session-name $SESSION find text "are you a robot"
+```
 
-# Scan for CAPTCHA indicators
-npx agent-browser --session-name <domain> find text "captcha"
-npx agent-browser --session-name <domain> find text "verify you are human"
-npx agent-browser --session-name <domain> find text "are you a robot"
-
-# Check for lazy-load barriers (content behind scroll triggers)
-npx agent-browser --session-name <domain> eval "document.querySelectorAll('[data-lazy],[loading=\"lazy\"]').length"
+```bash
+npx agent-browser --session-name $SESSION eval "document.querySelectorAll('[data-lazy],[loading=\"lazy\"]').length"
 ```
 
 Record:
 - Page title retrieved: yes/no
-- Body text length (characters)
 - Word count
 - CAPTCHA/anti-bot elements found: yes/no (list any refs)
 - Lazy-load elements that may block agent access
@@ -204,7 +207,7 @@ Record:
 ## Step 8 — Annotated Screenshot
 
 ```bash
-npx agent-browser --session-name <domain> screenshot --annotate ./audit-reports/<domain>-annotated.png
+npx agent-browser --session-name $SESSION screenshot --annotate ./audit-reports/<domain>-annotated.png
 ```
 
 Confirm the file was saved. This image is included in the client deliverable.
