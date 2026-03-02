@@ -1,5 +1,5 @@
 # Agentic Advertising Site Audit
-## Adtech & Digital Advertising Industry — March 1, 2026
+## AI Agent Accessibility in Programmatic Advertising — March 2026
 
 **19 domains audited** using `agent-browser v0.15.1` — a headless browser that reads sites through the accessibility tree, exactly as AI agents do. No visual rendering. Pure machine comprehension.
 
@@ -7,20 +7,33 @@
 
 ## Table of Contents
 
-1. [The Gold Standard](#the-gold-standard--vercelcom)
-2. [Full Cohort Results](#full-cohort-results)
-3. [llms.txt Adoption](#llmstxt-adoption--the-key-finding)
-4. [Grade Distribution](#grade-distribution)
-5. [Scoring Methodology](#scoring-methodology)
-6. [Cohort-Wide Findings](#cohort-wide-findings)
-7. [Recommendations](#recommendations)
-8. [Closing](#closing)
+1. [Executive Summary](#executive-summary)
+2. [The Gold Standard](#the-gold-standard--vercelcom)
+3. [Full Cohort Results](#full-cohort-results)
+4. [llms.txt Adoption](#llmstxt-adoption--the-key-finding)
+5. [Grade Distribution](#grade-distribution)
+6. [Scoring Methodology](#scoring-methodology)
+7. [Cohort-Wide Findings](#cohort-wide-findings)
+8. [Recommendations](#recommendations)
+9. [Closing](#closing)
+
+---
+
+## Executive Summary
+
+The programmatic advertising industry is approaching a structural inflection point. Media buyers are beginning to deploy AI agents to manage RFP workflows, evaluate partner capabilities, and shortlist vendors — tasks that were exclusively human last year. When that shift matures, the primary consumer of B2B adtech marketing will not be a human buyer navigating a website. It will be a machine parser reading an accessibility tree.
+
+This audit measures how ready 19 major adtech and infrastructure platforms are for that reality.
+
+The findings are sobering. The cohort average is **71.3 out of 100** — squarely in "agents will struggle" territory. No adtech site earned an A grade. Only 3 of 18 adtech domains have a functional `/llms.txt` file. The highest scorer in the cohort is not an adtech company at all — it is Vercel, a developer infrastructure firm, at 82/100.
+
+The gap is not primarily technical. It is a prioritization problem.
 
 ---
 
 ## The Gold Standard — Vercel.com
 
-Vercel scores **82/100 (Grade B)** — the highest in this cohort and the benchmark every adtech site should measure against. No site in the cohort achieved an A grade. Vercel, a developer infrastructure company, outperforms every advertising platform audited.
+Vercel scores **82/100 (Grade B)** — the highest in this cohort and the benchmark every adtech site should measure against. A developer infrastructure company outperforms every advertising platform audited.
 
 **What Vercel gets right:**
 
@@ -179,15 +192,18 @@ At minimum: name, url, logo, and sameAs social profiles. Critical for `advertisi
 **4. Label social links with brand and platform name**
 Pattern: `"[Brand] on [Platform]"` — for example, `"Taboola on LinkedIn"` rather than `"LinkedIn"` or `"LI"`. Applicable to virtually every site in this cohort.
 
+**5. Audit robots.txt for AI crawlers**
+Explicitly allow `GPTBot`, `ClaudeBot`, and `anthropic-ai` on non-gated product and capability pages. IAB Tech Lab's `/llms.txt` serves no functional purpose while its `robots.txt` blocks every AI crawler that would read it.
+
 ### Strategic — One to Three Months
 
-**5. Author your llms.txt deliberately**
+**6. Author your llms.txt deliberately**
 The Yoast auto-generated file is a good starting point. Treat it as a product decision: which content sections matter most for LLM comprehension? What should an AI agent prioritize when reading your site? Vercel's manually authored file reflects those choices. Plugin-generated files do not.
 
-**6. Adopt OpenX's content card labeling pattern**
+**7. Adopt OpenX's content card labeling pattern**
 Replace generic "Read More" link text with full article or product descriptions. This benefits AI agent navigation and screen reader accessibility simultaneously, at no additional infrastructure cost.
 
-**7. Add /agents.md**
+**8. Add /agents.md**
 Document what agents are explicitly permitted to do: which forms they can fill, which APIs are accessible, and what content can be summarized or reproduced. This is the convention emerging beyond llms.txt, already visible in Vercel's audit findings.
 
 ---
@@ -196,9 +212,9 @@ Document what agents are explicitly permitted to do: which forms they can fill, 
 
 The adtech industry is building AI-powered products at speed while leaving its own front doors largely closed to AI agents. Only 4 of 19 audited sites have a functional `llms.txt`. No site earned an A grade. The cohort average of 71.3 sits squarely in "agents will struggle" territory.
 
-Vercel — a developer infrastructure company with no advertising product — sets the standard the industry should aspire to. The 11-point gap between Vercel (82) and the adtech cohort average (71) is not a technical problem. It is a prioritization problem.
+As agentic media planning matures — buyer-deployed LLMs querying vendor capabilities, shortlisting partners, and initiating RFP workflows without a human in the loop — the adtech platforms that have made their sites machine-readable will have a structural advantage. Those that have not will be systematically excluded from automated consideration sets, not because of product quality, but because the information cannot be parsed.
 
-The companies that treat AI agent accessibility as a first-class concern today will hold a measurable advantage as AI agents become the primary interface through which buyers, researchers, and customers interact with the advertising ecosystem.
+Vercel — a developer infrastructure company with no advertising product — sets the standard the industry should aspire to. The 11-point gap between Vercel (82) and the adtech cohort average (71) is not a technical problem. It is a prioritization problem.
 
 ---
 
